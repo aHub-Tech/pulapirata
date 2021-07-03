@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pula Pirata | Lobby</title>
+
+    <link rel="stylesheet" href="./../css/style.css">
+    <link rel="stylesheet" href="./../css/lobby.css">
+</head>
+<body>
+    <div class="splash-screen">
+        <div class="splash-screen-img"></div>
+        <div class="splash-screen-msg">Carregando...</div>
+    </div>
+    
+    <div class="error"><!-- msg --></div>
+
+    <div class="toolbar">
+        <button class="btn-circle btn-fbr" onclick="LOBBY.createRoom()"> 
+            <img src="./../img/add.svg" style="max-width: 20px;"> 
+        </button>
+    </div>
+    <div class="box"></div>
+
+    <script src="./../controllers/session.js"></script>
+    <script src="./../controllers/error.js"></script>
+    <script src="./../controllers/splash-screen.js"></script>
+    <script src="./../controllers/modal.js"></script>
+    <script src="./../controllers/header.js"></script>
+    <script src="./../libs/crypto.js"></script>
+    <script src="./../controllers/lobby.js"></script>
+    <script>
+        const LOBBY = new lobby();
+    </script>
+</body>
+</html>

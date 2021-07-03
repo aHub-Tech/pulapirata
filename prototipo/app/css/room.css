@@ -1,0 +1,351 @@
+.container {
+    background-color: #C4C4C4;
+    /* height: inherit; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+    height: 100vh;
+    width: 100%;
+    /* padding: 20px; */
+}
+.game {
+    /* flex: 1; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* width: 40%; */
+    width: 100%;
+    position: relative;
+}
+.game img {
+    max-width: 120px;
+    position: absolute;
+    bottom: 150px;
+}
+
+.game svg {
+    margin-top: 120px;
+    max-height: 230px;
+    z-index: 1;
+}
+.game svg:hover {
+    animation: shake .5s;
+    animation-iteration-count: .5s;
+}
+.players {
+    /* background-color: aqua; */
+    margin-top: 30px;
+    width: 100%;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.players > .move {
+    color: #575757;
+    font-weight: 600;
+}
+.players span {
+    color: #242424;
+}
+.players > ul {
+    list-style: none;
+    /* margin: 0 auto; */
+    padding: 0;
+}
+.players > ul > li {
+    display: inline-block;
+}
+.player {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    transition: .5s;
+    padding: 10px;
+}
+.player:hover {
+    transform: scale(1.2);
+}
+.player > .avatar {
+    height: 57px;
+    width: 57px;
+    border-radius: 50px;
+    background-color: #575757;
+    overflow: hidden;
+}
+.player > .avatar > img {
+    height: inherit;
+}
+.player > .name {
+    text-align: center;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.finish {
+    font-weight: 600;
+    color: #565656;
+}
+.finish span {
+    font-weight: 700;
+    color: #242424;
+    text-transform: uppercase;
+}
+
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+@media (max-width: 720px) {
+    .container {
+        overflow: hidden;
+    }
+    .game img {
+        max-width: 130px;
+        bottom: 200px;
+    }
+    .game svg {
+        margin-top: 150px;
+        max-height: 290px;
+    }
+    .player > .avatar {
+        height: 40px;
+        width: 40px;
+    }
+    .player > .name {
+        font-size: 14px;
+    }
+}
+
+.pirateAnimation {
+  animation: pirateAnimation ease 10s;
+  animation-iteration-count: infinite;
+  transform-origin: 50% 50%;
+  -webkit-animation: pirateAnimation ease 10s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-transform-origin: 50% 50%;
+  -moz-animation: pirateAnimation ease 10s;
+  -moz-animation-iteration-count: infinite;
+  -moz-transform-origin: 50% 50%;
+  -o-animation: pirateAnimation ease 10s;
+  -o-animation-iteration-count: infinite;
+  -o-transform-origin: 50% 50%;
+  -ms-animation: pirateAnimation ease 10s;
+  -ms-animation-iteration-count: infinite;
+  -ms-transform-origin: 50% 50%;
+}
+  
+@keyframes pirateAnimation{
+    0% {
+      transform:  translate(2px,-2px)  ;
+    }
+    8% {
+      transform:  translate(2px,-26px)  ;
+    }
+    17% {
+      transform:  translate(1px,1px)  ;
+    }
+    100% {
+      transform:  translate(1px,1px)  ;
+    }
+  }
+  
+  @-moz-keyframes pirateAnimation{
+    0% {
+      -moz-transform:  translate(2px,-2px)  ;
+    }
+    8% {
+      -moz-transform:  translate(2px,-26px)  ;
+    }
+    17% {
+      -moz-transform:  translate(1px,1px)  ;
+    }
+    100% {
+      -moz-transform:  translate(1px,1px)  ;
+    }
+  }
+  
+  @-webkit-keyframes pirateAnimation {
+    0% {
+      -webkit-transform:  translate(2px,-2px)  ;
+    }
+    8% {
+      -webkit-transform:  translate(2px,-26px)  ;
+    }
+    17% {
+      -webkit-transform:  translate(1px,1px)  ;
+    }
+    100% {
+      -webkit-transform:  translate(1px,1px)  ;
+    }
+  }
+  
+  @-o-keyframes pirateAnimation {
+    0% {
+      -o-transform:  translate(2px,-2px)  ;
+    }
+    8% {
+      -o-transform:  translate(2px,-26px)  ;
+    }
+    17% {
+      -o-transform:  translate(1px,1px)  ;
+    }
+    100% {
+      -o-transform:  translate(1px,1px)  ;
+    }
+  }
+  
+  @-ms-keyframes pirateAnimation {
+    0% {
+      -ms-transform:  translate(2px,-2px)  ;
+    }
+    8% {
+      -ms-transform:  translate(2px,-26px)  ;
+    }
+    17% {
+      -ms-transform:  translate(1px,1px)  ;
+    }
+    100% {
+      -ms-transform:  translate(1px,1px)  ;
+    }
+  }
+
+
+  .jumpAnimationTop{
+    animation: jumpAnimationTop linear 10s;
+    animation-iteration-count: 1;
+    transform-origin: 50% 50%;
+    -webkit-animation: jumpAnimationTop linear 10s;
+    -webkit-animation-iteration-count: 1;
+    -webkit-transform-origin: 50% 50%;
+    -moz-animation: jumpAnimationTop linear 10s;
+    -moz-animation-iteration-count: 1;
+    -moz-transform-origin: 50% 50%;
+    -o-animation: jumpAnimationTop linear 10s;
+    -o-animation-iteration-count: 1;
+    -o-transform-origin: 50% 50%;
+    -ms-animation: jumpAnimationTop linear 10s;
+    -ms-animation-iteration-count: 1;
+    -ms-transform-origin: 50% 50%;
+  }
+  
+  @keyframes jumpAnimationTop{
+    0% {
+      transform:  translate(0px,0px)  rotate(0deg) ;
+    }
+    4% {
+      transform:  translate(-13px,-279px)  rotate(-527deg) ;
+    }
+    10% {
+      transform:  translate(-215px,-266px)  rotate(-621deg) ;
+    }
+    15% {
+      transform:  translate(-262px,134px)  rotate(-699deg) ;
+    }
+    21% {
+      transform:  translate(-549px,-20px)  rotate(-824deg) ;
+    }
+    100% {
+      transform:  translate(-549px,-20px)  rotate(-824deg) ;
+    }
+  }
+  
+  @-moz-keyframes jumpAnimationTop{
+    0% {
+      -moz-transform:  translate(0px,0px)  rotate(0deg) ;
+    }
+    4% {
+      -moz-transform:  translate(-13px,-279px)  rotate(-527deg) ;
+    }
+    10% {
+      -moz-transform:  translate(-215px,-266px)  rotate(-621deg) ;
+    }
+    15% {
+      -moz-transform:  translate(-262px,134px)  rotate(-699deg) ;
+    }
+    21% {
+      -moz-transform:  translate(-549px,-20px)  rotate(-824deg) ;
+    }
+    100% {
+      -moz-transform:  translate(-549px,-20px)  rotate(-824deg) ;
+    }
+  }
+  
+  @-webkit-keyframes jumpAnimationTop {
+    0% {
+      -webkit-transform:  translate(0px,0px)  rotate(0deg) ;
+    }
+    4% {
+      -webkit-transform:  translate(-13px,-279px)  rotate(-527deg) ;
+    }
+    10% {
+      -webkit-transform:  translate(-215px,-266px)  rotate(-621deg) ;
+    }
+    15% {
+      -webkit-transform:  translate(-262px,134px)  rotate(-699deg) ;
+    }
+    21% {
+      -webkit-transform:  translate(-549px,-20px)  rotate(-824deg) ;
+    }
+    100% {
+      -webkit-transform:  translate(-549px,-20px)  rotate(-824deg) ;
+    }
+  }
+  
+  @-o-keyframes jumpAnimationTop {
+    0% {
+      -o-transform:  translate(0px,0px)  rotate(0deg) ;
+    }
+    4% {
+      -o-transform:  translate(-13px,-279px)  rotate(-527deg) ;
+    }
+    10% {
+      -o-transform:  translate(-215px,-266px)  rotate(-621deg) ;
+    }
+    15% {
+      -o-transform:  translate(-262px,134px)  rotate(-699deg) ;
+    }
+    21% {
+      -o-transform:  translate(-549px,-20px)  rotate(-824deg) ;
+    }
+    100% {
+      -o-transform:  translate(-549px,-20px)  rotate(-824deg) ;
+    }
+  }
+  
+  @-ms-keyframes jumpAnimationTop {
+    0% {
+      -ms-transform:  translate(0px,0px)  rotate(0deg) ;
+    }
+    4% {
+      -ms-transform:  translate(-13px,-279px)  rotate(-527deg) ;
+    }
+    10% {
+      -ms-transform:  translate(-215px,-266px)  rotate(-621deg) ;
+    }
+    15% {
+      -ms-transform:  translate(-262px,134px)  rotate(-699deg) ;
+    }
+    21% {
+      -ms-transform:  translate(-549px,-20px)  rotate(-824deg) ;
+    }
+    100% {
+      -ms-transform:  translate(-549px,-20px)  rotate(-824deg) ;
+    }
+  }

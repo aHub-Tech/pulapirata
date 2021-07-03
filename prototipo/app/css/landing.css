@@ -1,0 +1,393 @@
+* {
+  box-sizing: border-box;
+}
+html, body {
+    padding: 0;
+    margin: 0;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    background-color: #C4C4C4;
+    overflow: hidden;
+    scroll-behavior: smooth;
+    transition: .5s;
+}
+header {
+  height: 40px;
+  width: 100%;
+  top: 0;
+  left: 0;
+  padding: 10px;
+  position: fixed;
+  background-color: #2B2B2B;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 3;
+}
+header div {
+  color: #FDAF40;
+  transition: .5s;
+  cursor: pointer;
+  text-shadow: 2px 3px black;
+}
+header div:hover {
+  transform: scale(1.05);
+}
+header ul {
+  width: 350px;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+header ul a {
+  color: #c3c3c3;
+  text-shadow: 1px 3px black;
+  cursor: pointer;
+  text-decoration: none;
+  transition: .3s ease-in-out;
+}
+header ul a:hover {
+  color: white;
+}
+.box {
+    /* max-width: 800px; */
+    /* height: 480px; */
+    height: 100vh;
+    /* width: 100%; */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    /* border-radius: 20px; */
+    position: relative;
+    /* margin: 0 auto; */
+    /* margin-top: 80px; */
+    background: rgb(35,35,35);
+    background-image: url(./../img/ship.JPEG);
+    background-position: center;
+    background-size: cover;
+}
+.box .box-left {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.box .title {
+    width: 380px;
+    margin-bottom: 10px;
+}
+.box .title .principal {
+    color: white;
+    text-align: center;
+    font-size: 65px;
+    margin: 0;
+    text-shadow: 3px 3px black;
+}
+.box .title hr {
+    margin: 0;
+}
+.box .title .sub {
+    color: white;
+    text-align: center;
+    color: #FDAF40;
+    text-shadow: 2px 3px #502f01;
+    font-size: 26px;
+}
+.box .buttons {
+    padding: 10px;
+}
+.box .buttons button {
+    background-color: #102233;
+    padding: 20px 40px;
+    border: 1px solid #cdcac7;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+    font-family: system-ui;
+    margin: 2px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: .3s linear;
+}
+.box .buttons button:hover {
+    border-color: #FDAF40;
+    color: #FDAF40;
+    transform: scale(1.05);
+}
+.box .box-right {
+    /* width: 30%; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding-top: 100px;
+}
+.box .pirata {
+    max-width: 120px;
+    position: absolute;
+    left: 40px;
+    bottom: 195px;
+}
+.box .barril {
+    max-width: 200px;
+    z-index: 1;
+}
+.box .barril:hover {
+    animation: shake .5s;
+    animation-iteration-count: .5s;
+}
+.box .rodape {
+    color: white;
+    font-weight: 600;
+    font-family: system-ui;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.box .rodape a {
+    transition: .5s;
+    cursor: pointer;
+    padding-top: 20px;
+    background-color: #102233cc;
+    border-radius: 10px;
+    border: 1px solid #d9418b;
+    padding: 5px;
+}
+.box .rodape a:hover {
+    transform: scale(1.1);
+}
+.box .rodape p {
+    padding: 10px;
+    background-color: #102233d4;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* parte 2 - como funciona o jogo */
+.box2 {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: rgb(35,35,35);
+  background-image: url(./../img/ship.JPEG);
+  background-position: center;
+  background-size: cover;
+}
+.box2 .title {
+  flex: 0.5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.box2 .title .principal {
+  font-size: 60px;
+  color: white;
+  text-shadow: 2px 3px black;
+  margin: 0;
+  padding: 0;
+}
+.box2 hr {
+  width: 100%;
+  color: white;
+  box-shadow: 0px 1px black;
+}
+.box2 .title .sub {
+  text-align: center;
+  font-size: 20px;
+  color: #FDAF40;
+  text-shadow: 1px 3px #492b00;
+  margin: 0;
+}
+.box2 .content{
+  flex: 1;
+  width: 800px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.box2 .card {
+  width: 200px;
+  height: 300px;
+  /* background-color: blueviolet; */
+  background-image: linear-gradient(137deg, #24527C, #001223);
+  border-radius: 15px;
+  box-shadow: 2px 3px #000000b0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+/* .box2 .card .img {
+  width: 100px;
+  height: 100px;
+  background-color: brown;
+  border-radius: 50px;
+} */
+.box2 .card img {
+  max-width: 130px;
+}
+.box2 .card .title {
+  color: #FDAF40;
+  text-shadow: 1px 2px #422700;
+}
+.box2 .card .description {
+  color: white;
+  text-align: center;
+  font-family: system-ui;
+  font-size: 12px;
+  padding: 10px;
+}
+
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+.pirateAnimation {
+    animation: pirateAnimation ease 10s;
+    animation-iteration-count: infinite;
+    transform-origin: 50% 50%;
+    -webkit-animation: pirateAnimation ease 10s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-transform-origin: 50% 50%;
+    -moz-animation: pirateAnimation ease 10s;
+    -moz-animation-iteration-count: infinite;
+    -moz-transform-origin: 50% 50%;
+    -o-animation: pirateAnimation ease 10s;
+    -o-animation-iteration-count: infinite;
+    -o-transform-origin: 50% 50%;
+    -ms-animation: pirateAnimation ease 10s;
+    -ms-animation-iteration-count: infinite;
+    -ms-transform-origin: 50% 50%;
+  }
+    
+  @keyframes pirateAnimation{
+      0% {
+        transform:  translate(2px,-2px)  ;
+      }
+      8% {
+        transform:  translate(2px,-26px)  ;
+      }
+      17% {
+        transform:  translate(1px,1px)  ;
+      }
+      100% {
+        transform:  translate(1px,1px)  ;
+      }
+    }
+    
+    @-moz-keyframes pirateAnimation{
+      0% {
+        -moz-transform:  translate(2px,-2px)  ;
+      }
+      8% {
+        -moz-transform:  translate(2px,-26px)  ;
+      }
+      17% {
+        -moz-transform:  translate(1px,1px)  ;
+      }
+      100% {
+        -moz-transform:  translate(1px,1px)  ;
+      }
+    }
+    
+    @-webkit-keyframes pirateAnimation {
+      0% {
+        -webkit-transform:  translate(2px,-2px)  ;
+      }
+      8% {
+        -webkit-transform:  translate(2px,-26px)  ;
+      }
+      17% {
+        -webkit-transform:  translate(1px,1px)  ;
+      }
+      100% {
+        -webkit-transform:  translate(1px,1px)  ;
+      }
+    }
+    
+    @-o-keyframes pirateAnimation {
+      0% {
+        -o-transform:  translate(2px,-2px)  ;
+      }
+      8% {
+        -o-transform:  translate(2px,-26px)  ;
+      }
+      17% {
+        -o-transform:  translate(1px,1px)  ;
+      }
+      100% {
+        -o-transform:  translate(1px,1px)  ;
+      }
+    }
+    
+    @-ms-keyframes pirateAnimation {
+      0% {
+        -ms-transform:  translate(2px,-2px)  ;
+      }
+      8% {
+        -ms-transform:  translate(2px,-26px)  ;
+      }
+      17% {
+        -ms-transform:  translate(1px,1px)  ;
+      }
+      100% {
+        -ms-transform:  translate(1px,1px)  ;
+      }
+    }
+
+
+@media (max-width: 720px) {
+    html, body {
+      overflow: scroll;
+    }
+    .box {
+        height: inherit;
+        border-radius: 0;
+        margin: 0;
+        flex-direction: column;
+        overflow: hidden;
+        padding: 50px 20px;
+    }
+    .box .title .sub {
+        text-shadow: 2px 3px #502f01;
+        font-size: 26px;
+    }
+    .box-left {
+        width: 100% !important;
+    }
+    .box-right {
+        width: auto !important;
+    }
+    .box2 {
+      padding: 5px 20px;
+      height: 100vh;
+    }
+    .box2 .title .principal {
+      font-size: 30px;
+    }
+    .box2 .content {
+      width: 100%;
+      overflow: scroll;
+    }
+    .box2 .content .card {
+      margin: 10px;
+      min-width: 200px;
+    }
+}
