@@ -1,3 +1,16 @@
+<div align="center">
+  <img alt="Pula Pirata" src=".github/pirata.svg" width="150px" />
+</div>
+
+<h2 align="center">Pula Pirata</h2>
+
+<p align="center">
+  <img src="https://img.shields.io/github/issues/ahub-tech/pulapirata" alt="GitHub Issues">
+
+  <img src="https://img.shields.io/github/license/ahub-tech/pulapirata" alt="license" />
+
+  <img src="https://img.shields.io/github/repo-size/ahub-tech/pulapirata" alt="repo size" />
+</p>
 
 # Pula Pirata
 
@@ -15,7 +28,7 @@ The idea for the project arose based on the famous toy of the same name, in whic
 
 ## How it works
 
-The game's functionality is very simple and practical which makes it dynamic and enjoying.
+The game's functionality is very straight forward which makes it dynamic and enjoyable.
 Basically, each person must select a slot in the barrel and click it to mark it with its color, but be careful when choosing, because you have a chance to click the slot that makes the pirate jump. The game ends when someone marks the slot that causes the pirate to be fired.
 
 ## Technologies
@@ -23,12 +36,17 @@ Basically, each person must select a slot in the barrel and click it to mark it 
 The following tools and technologies were used to build the game:
 
 - [PHP](https://php.net/)
+- [JavaScript](https://www.javascript.com/)
 - [Figma](https://www.figma.com/)
 - [HTML](https://www.w3schools.com/html/)
 - [CSS](https://www.w3schools.com/css/)
 - [API Rest](https://www.w3schools.com/rest/default.asp)
 - [MVC Pattern](https://www.w3schools.com/php/php_mvc_pattern.asp)
 - [MySQL Database](https://www.w3schools.com/php/php_mysql_database.asp)
+
+## Requirements
+
+The project uses vanilla PHP and Javascript, so you will need to have a web server with PHP support.
 
 ## Assets
 
@@ -41,9 +59,9 @@ Figma models:
 The database UML is as follows:
 
 <div align="left">
-  <img src=".github/database_uml.png" width="350px" />
+  <img src=".github/database_uml.jpg" width="350px" />
 </div>
 
 ## License
 
-The project is under the _ license.
+The project is under the MIT license.
