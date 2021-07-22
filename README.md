@@ -39,9 +39,11 @@ Figma models:
 ## Database UML
 
 The database UML is as follows:
+
 <div align="left">
-  <img src="https://github.com/aHub-Tech/pulapirata/.github/database_uml.png" width="500" />
+  <img src=".github/database_uml.png" width="350px" />
 </div>
+
 ## License
 
 The project is under the _ license.
