@@ -58,9 +58,9 @@ Figma models:
 
 The database UML is as follows:
 
-<div align="left">
-  <img src=".github/database_uml.jpg" width="350px" />
-</div>
+<p align="center">
+  <img src=".github/database_uml.jpg" />
+</p>
 
 ## License
 
