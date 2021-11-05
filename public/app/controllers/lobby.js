@@ -33,10 +33,7 @@ class lobby {
         // this.getRooms();
         // setInterval(_ => {this.getRooms();}, 5000);
 
-        // this.onSocket();
-        this.socket.on('users', (data) => {
-            console.log(data);
-        });
+        this.onSocket();
     }
 
     filter (e) {
@@ -276,7 +273,7 @@ class lobby {
     }
 
     onSocket() {
-        this.socket.on('total-online', (data) => {
+        this.socket.on('users', (data) => {
             console.log(data);
         });
     }

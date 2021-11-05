@@ -3,6 +3,7 @@ const http = require('http')
 const cors = require('cors')
 
 const router_web = require('./src/routes/web')
+const user_connections = require('./src/store/user_connections')
 
 const app = express();
 const server = http.createServer(app)
@@ -18,27 +19,24 @@ app.use(express.json())
 app.use('/', router_web)
 
 
-// socket
-let connections = []
-
 io.on('connection', (socket) => {
     // connect lobby
     socket.on('connect-lobby', (data) => {
         // adicionando o socket_id
         data.socket_id = socket.id;
         // adicionando ao array de conexões
-        connections.push(data);
+        user_connections.addData(data);
         
         // emitando o total para o próprio usuário
         socket.emit('users', {
-            'users': connections
+            'users': user_connections.getData()
         });
 
         // emitindo para todos os demais do lobby
-        for(conn of connections) {
+        for(conn of user_connections.getOuthers(socket.id)) {
             if (conn.room_id === 'lobby') {
                 socket.to(conn.socket_id).emit('users', {
-                    'users': connections
+                    'users': user_connections.getData()
                 });
             }
         }
@@ -50,7 +48,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-       connections = connections.filter(c => c.socket_id !== socket.id);
+       user_connections.removeData(socket.id);
     });
 });
 
