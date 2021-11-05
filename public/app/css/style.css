@@ -1,0 +1,382 @@
+* {
+    box-sizing: border-box;
+}
+body, html {
+    padding: 0;
+    margin: 0;
+}
+body {
+    background-color: #C4C4C4;
+    /* background-image: url(https://www.dicasdonossobrasil.com.br/wp-content/uploads/2018/09/Barco-Pirata-BC.jpg); */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-blend-mode: luminosity;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    width: 100%;
+    height: 100vh;
+}
+i {
+    font-style: normal;
+    font-size: 18px;
+    padding: 2px;
+}
+.content {
+    width: 100%;
+    height: 100vh;
+    /* background-color: beige; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+header {
+    width: 100%;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #565656;
+    padding: 0 15px;
+    color: #fff;
+    font-weight: 600;
+    font-size: medium;
+    position: fixed;
+    top:0;
+    z-index: 2;
+}
+
+header > .room {
+    color: #F8CB58;
+    font-size: larger;
+    transition: .5s;
+}
+header > .room:hover {
+    transform: scale(1.2);
+}
+
+header > .title {
+    font-style: normal;
+    font-weight: 900;
+    font-size: 24px;
+    line-height: 28px;
+    text-align: center;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    user-select: none;
+}
+
+header > .user {
+    cursor: pointer;
+    user-select: none;
+    text-transform: uppercase;
+    font-size: 14px;
+    display: inherit;
+    padding: 15px 0;
+}
+
+header > .user > .menu-drop {
+    position: absolute;
+    padding: 5px 20px;
+    background: #636363;
+    right: 0;
+    width: 100px;
+    top: 35px;
+    display: none;
+    transition: .5s;
+}
+header > .user:hover .menu-drop {
+    display: block;
+}
+header > .user > .menu-drop:hover {
+    display: block;
+}
+header > .user > .menu-drop > ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+header > .user:hover > .menu-drop a:hover {
+    color: #b3b3b3;
+}
+.panel {
+    width: 320px;
+    border-radius: 10px;
+    background-color: whitesmoke;
+    padding: 10px;
+    box-shadow: 2px 2px #b1b1b1;
+}
+.panel-header {
+    padding: 5px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 20px;
+    border-bottom: 0.2px solid #cccccc42;
+}
+.panel-body {
+    padding: 5px;
+}
+.panel-footer {
+    padding: 5px;
+}
+.action-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+}
+table {
+    width: 100%;
+    border-spacing: 0;
+}
+table td {
+    border: 1px solid #bbb;
+    padding: 5px;
+}
+
+form {
+    margin: 10px;
+}
+.input-group {
+    width: 100%;
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+.input-group > label {
+    font-weight: 600;
+    padding: 0 8px;
+    width: 80px;
+}
+.input-group > input {
+    width: inherit;
+    border: 0.1px solid #d0bdbd;
+    padding: 5px 4px;
+    border-radius: 3px;
+}
+
+button {
+    background-color: #303596;
+    color: #e0e0e0;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .5s;
+}
+button:hover {
+    background-color: #494fc5;
+}
+.btn-circle {
+    height: 45px;
+    width: 45px;
+    border-radius: 30px;
+}
+/* button fixed bottom right */
+.btn-fbr {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+}
+.btn-brown {
+    background-color: brown;
+}
+.btn-brown:hover {
+    background-color: rgb(219, 88, 88);
+}
+.btn-gray {
+    background-color: #d9d9da;
+}
+.btn-gray:hover {
+    background-color: #a5a5a5;
+}
+.btn-red{
+    background-color: #af4040f5;
+}
+.btn-red:hover{
+    background-color: #ee8080f5;
+    color: black;
+}
+.inline {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+.inline a {
+    text-decoration: none;
+    font-weight: 600;
+    color: #0334bb;
+}
+.inline a:hover {
+    color: #4b7bff;
+}
+
+.error {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    padding: 10px;
+    border: 1px solid #772222;
+    border-radius: 5px;
+    text-align: center;
+    color: #f9dfdf;
+    background: brown;
+    text-transform: uppercase;
+    font-weight: bold;
+    display: none;
+    box-shadow: 2px 3px #4e4e4e;
+    z-index: 4;
+    user-select: none;
+}
+.show{
+    display: block !important;
+}
+.jogador_rodada {
+    padding: 10px;
+    background-color: tomato;
+    text-align: center;
+    font-weight: bold;
+    display: none;
+}
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgb(51 51 51 / 94%);
+    z-index: 3;
+    display: none;
+}
+.modal-header {
+    width: 80%;
+    padding: 10px;
+    text-align: center;
+    border-radius: 2px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e6e6e6;
+}
+.modal-content {
+    width: 80%;
+    height: auto;
+    padding: 10px;
+    background-color: #ffffff;
+    border-radius: 2px;
+    text-align: center;
+}
+.modal-show {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.loser {
+    font-weight: bold;
+    font-size: 15px;
+    text-transform: uppercase;
+}
+.players_in_game {
+    position: fixed;
+    bottom: 0;
+    background: burlywood;
+    width: 100%;
+    display: none;
+}
+.players_in_game > ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+.players_in_game > ul > li {
+    height: 50px;
+    width: 50px;
+    padding: 10px;
+    background-color: #772222;
+    color: rgb(233, 233, 233);
+    font-weight: bold;
+    border-radius: 50px;
+    margin: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.players_in_game > ul > li:hover {
+    transition: .5s;
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+.pirata {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    /* padding: 40px 0 150px 0; */
+    margin: 2rem 0 10rem 0;
+}
+.pirata > object {
+    max-width: 100%;
+    height: auto;
+}
+
+rect {
+    cursor: pointer;
+    background-clip: content-box;
+    background-color: rgb(140, 146, 146);
+}
+rect:hover {
+    fill: rgb(228, 140, 97);
+}
+
+/* splash screen */
+.splash-screen {
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    z-index: 9999;
+    background-color: rgb(0 0 0 / 80%);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.splash-screen-img {
+    width: 20rem;
+    height: 20rem;
+    background-image: url('./../img/splash.gif');
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 50px;
+}
+.splash-screen-msg {
+    padding: 5px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    user-select: none;
+}
+.splash-screen-show {
+    display: flex;
+}
+
+@media (max-width: 720px) {
+    header {
+        padding: 5px;
+    }
+    header > .room {
+        font-size: 16px;
+    }
+    header > .title {
+        font-size: 18px;
+    }
+    header > .user {
+        white-space: nowrap;
+        /* text-overflow: ellipsis; */
+        overflow: hidden;
+        font-size: 14px;
+        width: 90px;
+    }
+}

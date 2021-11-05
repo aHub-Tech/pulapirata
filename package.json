@@ -1,0 +1,29 @@
+{
+  "name": "pulapirata",
+  "version": "1.0.0",
+  "description": "<div align=\"center\">\r   <img alt=\"Pula Pirata\" src=\".github/pirata.svg\" width=\"150px\" />\r </div>",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aHub-Tech/pulapirata.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aHub-Tech/pulapirata/issues"
+  },
+  "homepage": "https://github.com/aHub-Tech/pulapirata#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "knex": "^0.95.11",
+    "mysql2": "^2.3.2",
+    "nodemon": "^2.0.13",
+    "socket.io": "^4.3.1"
+  }
+}

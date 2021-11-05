@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="./app/">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/register.css">
+</head>
+<body>
+    <div class="splash-screen">
+        <div class="splash-screen-img"></div>
+        <div class="splash-screen-msg">Carregando...</div>
+    </div>
+    <div class="error"><!-- msg --></div>
+
+    <div class="content">
+        <div class="panel">
+            <div class="panel-header">
+                REGISTRO
+            </div>
+            <div class=panel-body>
+                <form>
+                    <div class="input-group">
+                        <label for="name">Nome:</label>
+                        <input type="text" name="name" autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <label for="email">Email:</label>
+                        <input type="text" name="email" autocomplete="off">
+                    </div>
+                    <div class="input-group">
+                        <label for="pass">Senha:</label>
+                        <input type="password" name="pass">
+                    </div>
+
+                </form>
+            </div>
+            <div class="panel-footer">
+                <div class="inline">
+                    <button type="button" onclick="AUTH.register()">Registrar</button>
+                    <a href="/login">Acessar com conta</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="libs/crypto.js"></script>
+    <script src="controllers/session.js"></script>
+    <script src="controllers/error.js"></script>
+    <script src="controllers/splash-screen.js"></script>
+    <script src="controllers/auth.js"></script>
+    <script>
+        const AUTH = new auth();
+    </script>
+</body>
+</html>

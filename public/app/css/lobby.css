@@ -1,0 +1,103 @@
+.box {
+    display: block;
+    /* background-color: lawngreen; */
+    width: 100%;
+    /* height: 100vh; */
+    display: flex;
+    flex-direction: row;
+    padding:10px 15px;
+    flex-wrap: wrap;
+    /* padding-left:20px;
+    padding-right:20px; */
+}
+.card {
+    max-height: 180px;
+    width: 300px;
+    background-color: #F7F7F7;
+    border-radius: 5px;
+    margin: 5px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #9c9c9c;
+    cursor: pointer;
+    font-weight: 600;
+    transition: .5s ease-in-out;
+}
+.card:hover {
+    transform: scale(1.05);
+}
+.card .header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+.card .content {
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.card .content .owner {
+    color: #797979;
+    font-size: 14px;
+}
+.card .footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+} 
+.card .footer .top {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.card .footer .bottom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    color: #8e8e8e;
+}
+.card hr {
+    width: 100%;
+}
+.box .info {
+    width: 100%;
+    max-height: 35px;
+    padding: 5px;
+    text-align: center;
+    background-color: #e6c77778;
+    color: #977b15;
+}
+.toolbar {
+    margin-top: 50px;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+}
+.toolbar input {
+    border: 1px solid #989595;
+    padding: 5px;
+    height: 20px;
+    width: 100%;
+    margin: 0 5px;
+    border-radius: 5px;
+}
+
+@media (max-width: 720px) {
+    .card {
+        width: 100%;
+    }
+    .toolbar input {
+        padding: 12px;
+    }
+}
