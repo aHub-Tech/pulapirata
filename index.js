@@ -59,6 +59,12 @@ io.on('connection', (socket) => {
         }
     });
 
+    // connect room
+    socket.on('connect-room', (data) => {
+        const user = user_connections.getDataByUserId(data.user_id)
+        console.log(user)
+    })
+
     socket.on('disconnect', () => {
        user_connections.removeData(socket.id);
     });

@@ -1,15 +1,20 @@
 const user_connections = {
 
     /*
-        User Connections Model
-        - user_id
-        - user_name
-        - user_color
-        - room_owner: true/false
-        - room_id
-        - room_private true/false
-        - room_timer: date time
-        - slots: []
+        room:
+            - id
+            - date_time
+            - pass
+            - timer_turn
+            - owner
+            - players:
+                - id
+                - name
+                - color
+                - online
+            - slots:
+                - id
+                - checked
 
     */
 

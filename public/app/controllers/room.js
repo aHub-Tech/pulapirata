@@ -1,5 +1,7 @@
 class room {
     constructor () {
+        this.socket = io('/');
+
         this.SESSION = new session();
         this.SPLASH_SCREEN = new splashScreen();
         this.MODAL = new modal();
@@ -24,6 +26,13 @@ class room {
         //     if (this.STATE.room.status === 'FINISH') return false;
         //     this.getState();
         // }, 5000);
+
+        this.socket.emit('connect-room', {
+            user_id: this.SESSION.getUserId()
+        })
+        this.socket.on('connect-room-confirmed', (data) => {
+            console.log(data)
+        })
     }
 
     create () {
