@@ -44,7 +44,19 @@ io.on('connection', (socket) => {
 
     // create room
     socket.on('create-room', (data) => {
-        console.log(data);
+        // const user = user_connections.getDataByUserId(data.user_id)
+        const room_id = Date.now()
+        user_connections.setUserColor(data.user_id)
+        user_connections.setRoomId(data.user_id, room_id)
+        user_connections.setRoomOwner(data.user_id, true)
+        user_connections.setRoomTimer(data.user_id)
+        user_connections.setRoomPass(data.user_id, data.room_pass)
+        
+        socket.emit('create-room-confirmed', (user_connections.getPublicDataUser(data.user_id)))
+
+        for (conn of user_connections.getData()) {
+            socket.to(conn.socket_id).emit('users', {'users': user_connections.getPublicData (data.user_id)})
+        }
     });
 
     socket.on('disconnect', () => {

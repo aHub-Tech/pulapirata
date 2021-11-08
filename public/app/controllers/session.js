@@ -1,6 +1,10 @@
 class session {
     DATA = null;
 
+    /*
+        user_id, user_name, room_id, user_color, room_owner
+    */
+
     constructor () {
         this.get();
     }
@@ -16,7 +20,7 @@ class session {
 
     set (data) {
         // tratando o owner
-        data.owner = (parseInt(data.owner)===0) ? false : true;
+        data.room_owner = (parseInt(data.room_owner)===0) ? false : true;
 
         this.DATA = data;
         localStorage.setItem('session', JSON.stringify(this.DATA));
@@ -24,7 +28,7 @@ class session {
     }
 
     getUserId () {
-        return this.DATA.id;
+        return this.DATA.user_id;
     }
 
     getJWT () {
@@ -32,31 +36,40 @@ class session {
     }
 
     getName () {
-        return this.DATA.name;
+        return this.DATA.user_name;
     }
 
-    setRoomID (id_room) {
-        this.DATA.idroom = id_room;
+    setRoomID (room_id) {
+        this.DATA.room_id = room_id;
         localStorage.setItem('session', JSON.stringify(this.DATA));
         return this.DATA;
     }
 
     inRoom () {
-        if (this.DATA.idroom !==undefined && this.DATA.idroom!=='' && this.DATA.idroom!==null) {
-            return this.DATA.idroom;
+        if (
+            this.DATA.room_id !==undefined && 
+            this.DATA.room_id!=='' && 
+            this.DATA.room_id!==null && 
+            this.DATA.room_id!=='lobby') {
+            return this.DATA.room_id;
         }else{
             return false;
         }
     }
 
     getColor () {
-        return this.DATA.color;
+        return this.DATA.user_color;
     }
 
     setColor (color) {
-        this.DATA.color = color;
+        this.DATA.user_color = color;
         localStorage.setItem('session', JSON.stringify(this.DATA));
         return this.DATA;
+    }
+    setRoomOwner (bool) {
+        this.DATA.room_owner = bool
+        localStorage.setItem('session', JSON.stringify(this.DATA))
+        return this.DATA
     }
 
     logout () {

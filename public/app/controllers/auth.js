@@ -97,10 +97,10 @@ class auth {
     guest() {
         // gerar um nome aleatório
         const data = {
-            id: (Date.now()),
-            name: ('GUEST' + Date.now()),
-            idroom:'',
-            owner: true
+            user_id: (Date.now()),
+            user_name: ('GUEST' + Date.now()),
+            room_id:'lobby',
+            room_owner: false
         };
 
         this.SESSION.set(data);

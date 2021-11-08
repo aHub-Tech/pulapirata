@@ -9,7 +9,7 @@ class lobby {
         this.MODAL = new modal();
         this.HEADER = new header();
         this.BOX = document.querySelector('div.box');
-        this.ROOMS = [];
+        this.ROOMS = {'551222354': [], '554446685' : []};
         this.ROOMS_FILTER = [];
         
         if (!this.SESSION.isValid()) {
@@ -46,73 +46,72 @@ class lobby {
         this.render(filter);
     }
 
-    getRooms () {
+    getRooms (data) {
         // verificando se está logado
         if (this.SESSION.inRoom()) {
-            return window.location.replace(`./room.html#${this.SESSION.inRoom()}`);
+            return window.location.replace(`/room#${this.SESSION.inRoom()}`);
         }
 
-        // listar salas ativas
-        // this.SPLASH_SCREEN.showSplash();
-        
-        fetch('./../../api/src/rest/room.php?method=getAll', {
-            method: 'GET',
-        })
-        .then(r=>r.json())
-        .then(json => {
-            // this.SPLASH_SCREEN.closeSplash();
-            if (json.success) {
-                if (json.data.length>0) {
-                    this.ROOMS = json.data;
-                    this.render(this.ROOMS);
-                }else{
-                    let body = `<div class="info">Nenhuma sala encontrada</div>`;
-                    this.ROOMS = [];
-                    this.BOX.innerHTML = body;
-                }
+        const rooms = [];
+        let countRooms = 0;
+        data.users.forEach(e => {
+            if (!rooms[e.room_id]) {
+                rooms[e.room_id] = {
+                    privated: e.privated,
+                    status: e.status,
+                    owner_name: e.owner_name,
+                    players: [e]
+                };
             }else{
-                this.ERROR.showError(json.msg);
+                rooms[e.room_id].players.push(e);
             }
-        });
+            if (e.room_id!=='lobby') countRooms++
+        })
+
+        console.log(countRooms)
+
+        if (countRooms) {
+            this.render(rooms);
+        }else{
+            let body = `<div class="info">Nenhuma sala encontrada</div>`;
+            this.BOX.innerHTML = body;
+        }
     }
 
     render (rooms) {
         let body = '';
 
-        rooms.forEach(e => {
+        for(const i in rooms) {
 
-            let privated = (parseInt(e.privated)) ? '<img style="max-width:12px"; src="./../img/lock.svg">' : '';
+            console.log(rooms[i].room_id)
+            
+            // if (rooms[i].room_id)
+
+            let privated = (rooms[i].privated) ? '<img style="max-width:12px"; src="./../img/lock.svg">' : '';
             
             let players = '';
-            e.players.map(e => {
-                // verificando se o jogador está em uma sala
-                if (e.iduser === this.SESSION.getUserId()) {
-                    this.SESSION.setRoomID(e.idroom);
-                    return window.location.replace(`./room.html#${this.SESSION.inRoom()}`);
-                }
-
-
+            rooms[i].players.map(e => {
                 players += e.user_name.split(' ')[0] + ' | ';
             });
             players = players.slice(0, -3);
             
             body += `
-                <div class="card" title="Entrar na sala #${e.id}" onclick="LOBBY.enterRoom(${e.id})">
+                <div class="card" title="Entrar na sala #${i}" onclick="LOBBY.enterRoom(${i})">
                     <div class="header">
                         <div class="left">
                             ${privated} 
-                            #${e.id}
+                            #${i}
                         </div>
-                        <div class="right">${e.status}</div>
+                        <div class="right">${rooms[i].status}</div>
                     </div>
                     <div class="content">
                         <div class="owner">OWNER</div>
-                        <div class="name_owner">${e.owner_name}</div>
+                        <div class="name_owner">${rooms[i].owner_name}</div>
                     </div>
                     <div class="footer">
                         <div class="top">
                             <div class="left">PLAYERS</div>
-                            <div class="right">${e.players.length}/4</div>
+                            <div class="right">${rooms[i].players.length}/4</div>
                         </div>
                         <hr>
                         <div class="bottom">
@@ -122,9 +121,8 @@ class lobby {
                 </div>
             `;
 
-            this.ROOMS = rooms;
             this.BOX.innerHTML = body;
-        });
+        };
     }
 
     createRoom () {
@@ -146,47 +144,24 @@ class lobby {
     }
 
     confirmCreate () {
-        let obj = {};
-        obj.pass_room = document.querySelector('input[name=pass_room]').value;
-        if (obj.pass_room !== '') obj.pass_room = CryptoJS.MD5(obj.pass_room).toString();
+        const room_pass = document.querySelector('input[name=pass_room]').value;
+        if (room_pass !== '') room_pass = CryptoJS.MD5(room_pass).toString();
         
-        obj.iduser = this.SESSION.getUserId();
-
         this.MODAL.close();
         this.SPLASH_SCREEN.showSplash();
 
-        // fetch('./../../api/src/rest/room.php', {
-        //     headers: {
-        //         'Authorized': 'Baerer ' + this.SESSION.getJWT()
-        //     },
-        //     method: 'POST',
-        //     body: JSON.stringify({
-        //         method: 'register',
-        //         data: obj
-        //     })
-        // })
-        // .then(r=>r.json())
-        // .then(json => {
-        //     this.SPLASH_SCREEN.closeSplash();
-
-        //     if (json.success) {
-        //         this.SESSION.setRoomID(json.data);
-        //         window.location.replace(`./room.html#${this.SESSION.inRoom()}`);
-        //     }else{
-        //         this.ERROR.showError(json.msg);
-        //     }
-        // });
-
-        const room = Date.now();
-        
         this.SPLASH_SCREEN.closeSplash();
 
-        this.SESSION.setRoomID(room);
-
-        const data = {iduse: this.SESSION.getUserId(), idroom: this.SESSION.inRoom()}
+        const data = {user_id: this.SESSION.getUserId(), room_pass: room_pass}
 
         this.socket.emit('create-room', data);
-        // window.location.replace(`./room#${this.SESSION.inRoom()}`);
+        this.socket.on('create-room-confirmed', (data) => {
+            this.SESSION.setRoomID(data.room_id)
+            this.SESSION.setColor(data.user_color)
+            this.SESSION.setRoomOwner(data.room_owner)
+
+            window.location.replace(`/room#${this.SESSION.inRoom()}`);
+        })
     }
 
     cancelCreate () {
@@ -274,7 +249,8 @@ class lobby {
 
     onSocket() {
         this.socket.on('users', (data) => {
-            console.log(data);
+            this.getRooms(data)
+            // verificar se usuário está em uma sala
         });
     }
 }

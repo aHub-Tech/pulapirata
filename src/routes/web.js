@@ -15,5 +15,8 @@ router.get('/register', (req, res) => {
 router.get('/lobby', (req, res) => {
     res.sendFile(path.resolve('./public/app/views/lobby.html'));
 });
+router.get('/room', (req, res) => {
+    res.sendFile(path.resolve('./public/app/views/room.html'));
+});
 
 module.exports = router

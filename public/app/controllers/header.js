@@ -83,7 +83,7 @@ class header {
     logout () {
         let logout = document.querySelector('a.logout');
         logout.addEventListener('click', e => {
-            if (this.SESSION.inRoom()) return alert('Não permitido durante partidas');
+            if (this.SESSION.inRoom() && this.SESSION.inRoom()!=='lobby') return alert('Não permitido durante partidas');
             this.SESSION.logout();
         });
     }

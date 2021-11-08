@@ -19,16 +19,16 @@ class room {
         this.create();
         
         // consulta toda a state da room
-        this.getState();
-        setInterval(_=> {
-            if (this.STATE.room.status === 'FINISH') return false;
-            this.getState();
-        }, 5000);
+        // this.getState();
+        // setInterval(_=> {
+        //     if (this.STATE.room.status === 'FINISH') return false;
+        //     this.getState();
+        // }, 5000);
     }
 
     create () {
-        if (!this.SESSION.isValid()) return window.location.replace('./login.html');
-        if (!this.SESSION.inRoom()) return window.location.replace('./lobby.html');
+        if (!this.SESSION.isValid()) return window.location.replace('/login');
+        if (!this.SESSION.inRoom()) return window.location.replace('/lobby');
 
         // alimentando a header
         this.HEADER.show({

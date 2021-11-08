@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <base href="./app/">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pula Pirata | Room</title>
 
-    <link rel="stylesheet" href="./../css/style.css">
-    <link rel="stylesheet" href="./../css/room.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/room.css">
 </head>
 <body>
 
@@ -20,7 +21,7 @@
 
     <div class="container">
         <div class="game">
-            <img src="./../img/pirata.svg" class="pirateAnimation">
+            <img src="img/pirata.svg" class="pirateAnimation">
 
             <svg width="656" height="894" viewBox="0 0 656 894" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M65.1322 65.1021C66.7933 48.4914 72.2333 13.8995 80.7048 8.41794C91.2942 1.566 569.061 -5.28593 580.896 12.7783C590.364 27.2296 593.147 57.0044 593.354 70.0854C596.054 69.2549 601.065 70.4799 606.419 88.1496C612.648 108.705 641.318 235.155 639.449 252.596C643.394 252.388 651.284 254.091 651.284 262.563C651.284 273.152 659.989 314.886 635.089 318.624C631.393 319.179 635.089 324.23 635.089 324.23L631.351 536.017C635.504 541.831 638.328 568.284 631.351 602.668L621.369 618.24C611.195 665.373 583.372 752.787 575.29 773.966L565.324 782.064C564.285 791.823 559.593 814.455 549.128 826.913C536.047 842.486 479.363 889.826 339.21 892.941C279.826 891.072 149.349 875.25 102.506 826.913C96.0698 814.662 83.1964 788.542 83.1964 782.064C70.0992 751.542 45.1831 671.187 31.4954 614.503C24.6435 599.553 11.5625 565.543 14.0541 549.098C16.5458 532.653 22.1519 527.296 24.6435 526.674L19.6603 312.395C14.0542 311.564 2.96647 308.034 3.4648 300.56C3.96312 293.085 6.99457 268.376 8.44801 256.956C9.35581 249.824 19.6603 252.596 19.6603 245.744C19.6603 226.83 49.5596 54.5128 65.1322 65.1021Z" fill="#743111" stroke="black"/>
@@ -91,12 +92,12 @@
         </div>
     </div>
 
-    <script src="./../controllers/session.js"></script>
-    <script src="./../controllers/splash-screen.js"></script>
-    <script src="./../controllers/error.js"></script>
-    <script src="./../controllers/modal.js"></script>
-    <script src="./../controllers/header.js"></script>
-    <script src="./../controllers/room.js"></script>
+    <script src="controllers/session.js"></script>
+    <script src="controllers/splash-screen.js"></script>
+    <script src="controllers/error.js"></script>
+    <script src="controllers/modal.js"></script>
+    <script src="controllers/header.js"></script>
+    <script src="controllers/room.js"></script>
 
     <script>
         const ROOM = new room();
