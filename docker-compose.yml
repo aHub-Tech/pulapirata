@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   php:
-    image: "php:7.2-cli"
+    image: "php:7.3-cli"
     command: >-
       bash -c "
       docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd
