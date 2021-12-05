@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  php:
+    image: "php:7.2-cli"
+    command: >-
+      bash -c "
+      docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd
+      && docker-php-ext-configure mysqli --with-mysqli=mysqlnd
+      && docker-php-ext-install pdo_mysql
+      && php -S 0.0.0.0:8080"
+    working_dir: /usr/src/myapp
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./prototipo:/usr/src/myapp
+  mysql:
+    image: "mariadb:10.4"
+    environment:
+      - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=1
+    volumes:
+      - ./mysql-data:/var/lib/mysql
