@@ -2,18 +2,11 @@ version: "3.9"
 
 services:
   php:
-    image: "php:7.3-cli"
-    command: >-
-      bash -c "
-      docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd
-      && docker-php-ext-configure mysqli --with-mysqli=mysqlnd
-      && docker-php-ext-install pdo_mysql
-      && php -S 0.0.0.0:8080"
-    working_dir: /usr/src/myapp
+    image: "litespeedtech/openlitespeed:1.7.11-lsphp73"
     ports:
-      - "8080:8080"
+      - "8080:80"
     volumes:
-      - ./prototipo:/usr/src/myapp
+      - ./prototipo:/var/www/vhosts/localhost/html
   mysql:
     image: "mariadb:10.4"
     environment:
