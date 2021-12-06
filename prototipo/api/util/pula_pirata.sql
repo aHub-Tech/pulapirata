@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `room` (
   `date_register` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Exportação de dados foi desmarcado.
+-- Exportacao de dados foi desmarcado.
 
 -- Copiando estrutura para tabela pula_pirata.room_slot
 CREATE TABLE IF NOT EXISTS `room_slot` (
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `room_slot` (
   `checked` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Exportação de dados foi desmarcado.
+-- Exportacao de dados foi desmarcado.
 
 -- Copiando estrutura para tabela pula_pirata.room_user
 CREATE TABLE IF NOT EXISTS `room_user` (
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `room_user` (
   `date_register` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Exportação de dados foi desmarcado.
+-- Exportacao de dados foi desmarcado.
 
 -- Copiando estrutura para tabela pula_pirata.user
 CREATE TABLE IF NOT EXISTS `user` (
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `date_register` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Exportação de dados foi desmarcado.
+-- Exportacao de dados foi desmarcado.
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;

@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  php:
+    image: "litespeedtech/openlitespeed:1.7.11-lsphp73"
+    ports:
+      - "8080:80"
+    volumes:
+      - ./prototipo:/var/www/vhosts/localhost/html
+  mysql:
+    image: "mariadb:10.4"
+    environment:
+      - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=1
+    volumes:
+      - ./mysql-data:/var/lib/mysql

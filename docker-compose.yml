@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  php:
+    image: "ahub-tech/pulapirata:0.1"
+    ports:
+      - "8080:80"
+  mysql:
+    image: "mariadb:10.4"
+    environment:
+      - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=1
+    volumes:
+      - ./mysql-data:/var/lib/mysql

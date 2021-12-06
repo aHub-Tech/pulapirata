@@ -2,7 +2,7 @@
 
 class conexao_pdo {
     protected $con;
-    protected $host = "localhost";
+    protected $host = "mysql";
     protected $dbname ="pula_pirata";
     protected $user = "root";
     protected $pass = "";
