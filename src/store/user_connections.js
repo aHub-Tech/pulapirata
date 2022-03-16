@@ -31,6 +31,9 @@ const user_connections = {
     getDataByUserId(user_id) {
         return this.data.find(d => d.user_id === user_id)
     },
+    getDataBySocketId(socket_id) {
+        return this.data.find(d => d.socket_id === socket_id)
+    },
     getData() {
         return this.data
     },

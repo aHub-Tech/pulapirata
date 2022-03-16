@@ -24,9 +24,10 @@ io.on('connection', (socket) => {
     socket.on('connect-lobby', (data) => {
         // adicionando o socket_id
         data.socket_id = socket.id;
+        data.connected = true;
         // adicionando ao array de conexões
         user_connections.addData(data);
-        
+
         // emitando o total para o próprio usuário
         socket.emit('users', {
             'users': user_connections.getData()
@@ -62,11 +63,17 @@ io.on('connection', (socket) => {
     // connect room
     socket.on('connect-room', (data) => {
         const user = user_connections.getDataByUserId(data.user_id)
-        console.log(user)
+        if (!user) socket.emit('not-connect')
     })
 
     socket.on('disconnect', () => {
-       user_connections.removeData(socket.id);
+        // const user = user_connections.getDataBySocketId(socket.id)
+        // if (user) {
+        //     console.log(user)
+        //     user.connected = false
+        //     user_connections.updateUser(user)
+        // }
+        user_connections.removeData(socket.id);
     });
 });
 

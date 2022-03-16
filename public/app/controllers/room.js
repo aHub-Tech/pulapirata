@@ -30,6 +30,10 @@ class room {
         this.socket.emit('connect-room', {
             user_id: this.SESSION.getUserId()
         })
+        this.socket.on('not-connect', () => {
+            this.SESSION.setRoomID('lobby')
+            window.location.replace('/lobby')
+        })
         this.socket.on('connect-room-confirmed', (data) => {
             console.log(data)
         })
