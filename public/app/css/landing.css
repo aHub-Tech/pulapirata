@@ -4,7 +4,8 @@
 html, body {
     padding: 0;
     margin: 0;
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    /* font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; */
+    font-family: 'Press Start 2P', cursive;
     background-color: #C4C4C4;
     overflow: hidden;
     scroll-behavior: smooth;
@@ -33,7 +34,7 @@ header div:hover {
   transform: scale(1.05);
 }
 header ul {
-  width: 350px;
+  width: auto;
   list-style: none;
   display: flex;
   align-items: center;
@@ -44,10 +45,14 @@ header ul a {
   text-shadow: 1px 3px black;
   cursor: pointer;
   text-decoration: none;
-  transition: .3s ease-in-out;
+  transition: .2s;
+  margin: 0px 0 0 20px;
+  font-size: 12px;
+  word-spacing: -5px;
 }
 header ul a:hover {
-  color: white;
+  color: #FDAF40;
+  transform: scale(1.05);
 }
 .box {
     /* max-width: 800px; */
@@ -89,11 +94,11 @@ header ul a:hover {
     margin: 0;
 }
 .box .title .sub {
-    color: white;
     text-align: center;
     color: #FDAF40;
-    text-shadow: 2px 3px #502f01;
+    text-shadow: 3px 3px #502f01;
     font-size: 26px;
+    line-height: 1.3em;
 }
 .box .buttons {
     padding: 10px;
@@ -187,7 +192,7 @@ header ul a:hover {
   align-items: center;
 }
 .box2 .title .principal {
-  font-size: 60px;
+  font-size: 35px;
   color: white;
   text-shadow: 2px 3px black;
   margin: 0;
@@ -232,10 +237,16 @@ header ul a:hover {
 } */
 .box2 .card img {
   max-width: 130px;
+  transition: .5s;
+}
+.box2 .card img:hover {
+  animation: shake .5s;
 }
 .box2 .card .title {
   color: #FDAF40;
   text-shadow: 1px 2px #422700;
+  font-size: 12px;
+  word-spacing: -8px;
 }
 .box2 .card .description {
   color: white;
