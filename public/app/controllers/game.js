@@ -2,32 +2,38 @@ class game {
     constructor () {
         this.socket = io('/');
 
-        this.SESSION = new session();
-        this.SPLASH_SCREEN = new splashScreen();
-        this.MODAL = new modal();
-        this.ERROR = new error();
-        this.HEADER = new header();
-        this.ROOM = document.querySelector('div.room');
-        this.USER = document.querySelector('div.user');
-        this.PLAYERS = document.querySelector('div.players');
-        this.SVG = document.querySelector('svg');
-        this.LOCALSTATUS = '';
-        // this.SLOTS = [];
-        this.STATE = {
-            room: null,
-            slots: [],
-            players: []
-        };
+        this.SESSION = new session()
+        this.SPLASH_SCREEN = new splashScreen()
+        this.MODAL = new modal()
+        this.ERROR = new error()
+        this.HEADER = new header()
+        this.ROOM = document.querySelector('div.room')
+        this.USER = document.querySelector('div.user')
+        this.RENDER = document.querySelector('div.render')
+        this.ROOMS = {}
 
-        this.RENDER = document.querySelector('div.render');
+        // this.PLAYERS = document.querySelector('div.players')
+        // this.SVG = document.querySelector('svg');
+        // this.LOCALSTATUS = '';
         
-        fetch('./views/lobby.html')
-        .then(r=> r.text())
-        .then(r=> this.RENDER.innerHTML = r)
+        // this.SLOTS = [];
+        // this.STATE = {
+        //     room: null,
+        //     slots: [],
+        //     players: []
+        // };
 
-        console.log('estamos no controller do game')
 
-        // this.create();
+        // verificando se o usuário possui uma sessão
+        if (!this.SESSION.isValid()) {
+            return window.location.replace('/login')
+        }
+        
+        // verificando se está em uma sala ou no lobby
+        const page = this.SESSION.inRoom() ? 'room' : 'lobby'
+        this.render(page);
+
+        console.log(this.SESSION)
         
         // consulta toda a state da room
         // this.getState();
@@ -48,21 +54,194 @@ class game {
         // })
     }
 
-    // create () {
-    //     if (!this.SESSION.isValid()) return window.location.replace('/login');
-    //     if (!this.SESSION.inRoom()) return window.location.replace('/lobby');
+    async render (page) {
+        const html = await fetch(`./views/${page}.html`)
+        .then(r=> r.text())
+        .then(r=> r)
 
-    //     // alimentando a header
-    //     this.HEADER.show({
-    //         room: `#${this.SESSION.inRoom()}`,
-    //         user: (this.SESSION.getName().split(' ')[0])
-    //     });
+        this.RENDER.innerHTML = html
 
-    //     // splash enquanto não temos o número suficente de players
-    //     this.SPLASH_SCREEN.showSplash(`<p>Aguardando mais piratas no convés...</p>
-    //     <center><button class="btn-red" onclick="ROOM.cancelRoom()">Cancelar Sala</button></center>
-    //     `);
-    // }
+        // alimentando a header
+        this.HEADER.show({
+            room: `#${(this.SESSION.inRoom() ? this.SESSION.inRoom() : 'LOBBY')}`,
+            user: (this.SESSION.getName().split(' ')[0])
+        });
+
+        setTimeout(() => {
+            this.MODAL.close()
+        }, [500])
+
+        if (page=='lobby') {
+            this.inLobby()
+        }else{
+            this.inRoom()
+        }
+    }
+
+    async inLobby() {
+        // elementos do lobby
+        this.BOX = document.querySelector('div.box')
+
+        // conectando ao lobby
+        this.socket.emit('connect-lobby', {
+            'room_id': 'lobby',
+            'user_id': (this.SESSION.getUserId()),
+            'user_name': (this.SESSION.getName().split(' ')[0])
+        })
+
+        // recebendo lista de usuários atualizada a cada nova conexão
+        this.socket.on('users', (data) => {
+            console.log(data)
+            this.getRooms(data)
+        })
+
+    }
+
+    getRooms(data) {
+        const rooms = [];
+        let countRooms = 0;
+        data.users.forEach(e => {
+            if (e.room_id!=='lobby') {
+                if (!rooms[e.room_id]) {
+                    rooms[e.room_id] = {
+                        privated: e.privated,
+                        status: e.status,
+                        owner_name: e.owner_name,
+                        players: [e]
+                    };
+                }else{
+                    rooms[e.room_id].players.push(e);
+                }
+                countRooms++
+            }
+        })
+
+        if (countRooms) {
+            this.renderRooms(rooms);
+        }else{
+            let body = `<div class="info">Nenhuma sala encontrada</div>`;
+            this.BOX.innerHTML = body;
+        }
+    }
+
+    renderRooms (rooms) {
+        let body = '';
+
+        for(const i in rooms) {
+
+            console.log(rooms[i].room_id)
+            
+            // if (rooms[i].room_id)
+
+            let privated = (rooms[i].privated) ? '<img style="max-width:12px"; src="./../img/lock.svg">' : '';
+            
+            let players = '';
+            rooms[i].players.map(e => {
+                players += e.user_name.split(' ')[0] + ' | ';
+            });
+            players = players.slice(0, -3);
+            
+            body += `
+                <div class="card" title="Entrar na sala #${i}" onclick="GAME.enterRoom(${i})">
+                    <div class="header">
+                        <div class="left">
+                            ${privated} 
+                            #${i}
+                        </div>
+                        <div class="right">${rooms[i].status}</div>
+                    </div>
+                    <div class="content">
+                        <div class="owner">OWNER</div>
+                        <div class="name_owner">${rooms[i].owner_name}</div>
+                    </div>
+                    <div class="footer">
+                        <div class="top">
+                            <div class="left">PLAYERS</div>
+                            <div class="right">${rooms[i].players.length}/4</div>
+                        </div>
+                        <hr>
+                        <div class="bottom">
+                            ${players}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            this.BOX.innerHTML = body;
+        };
+    }
+
+    createRoom () {
+        this.MODAL.show({
+            header:`
+                <h3>Nova Sala</h3>
+                <small>Crie sua sala e chame seus amigos</small>
+            `,
+            content: `
+            <div class="inline">
+                <div class="input-group"">
+                    <label>Senha</label>
+                    <input type="password" placeholder="Insira apenas se quiser privar a sala" name="pass_room"/>
+                </div>
+                <button onclick="GAME.confirmCreate()">Criar</button>
+                <button class="btn-brown" onclick="GAME.cancelCreate()">Cancelar</button>
+            </div>`
+        });
+    }
+
+    confirmCreate () {
+        const room_pass = document.querySelector('input[name=pass_room]').value;
+        if (room_pass !== '') room_pass = CryptoJS.MD5(room_pass).toString();
+        
+        this.MODAL.close();
+        this.SPLASH_SCREEN.showSplash();
+
+        this.SPLASH_SCREEN.closeSplash();
+
+        const data = {user_id: this.SESSION.getUserId(), room_pass: room_pass}
+        
+        this.socket.emit('create-room', data);
+        this.socket.on('create-room-confirmed', (data) => {
+            this.SESSION.setRoomID(data.room_id)
+            this.SESSION.setColor(data.user_color)
+            this.SESSION.setRoomOwner(data.room_owner)
+
+            // window.location.replace(`/room#${this.SESSION.inRoom()}`);
+
+            this.render('room')
+        })
+    }
+
+    cancelCreate () {
+        this.MODAL.close();
+    }
+
+    // controles na room
+    async inRoom() {
+        this
+        .SPLASH_SCREEN
+        .showSplash(`
+            <p>Aguardando mais piratas no convés...</p>
+                <center>
+                    <button class="btn-red" onclick="GAME.cancelRoom()">Cancelar Sala</button>
+               </center>
+        `);
+
+        // conectando a room
+        this.socket.emit('connect-room', {
+            user_id: this.SESSION.getUserId()
+        })
+        // recebendo sinal de não conectado
+        this.socket.on('not-connect', () => {
+            this.SESSION.setRoomID('lobby')
+            this.render('lobby')
+            // window.location.replace('/lobby')
+        })
+        // recebendo confirmação de coneção com a room
+        this.socket.on('connect-room-confirmed', (data) => {
+            console.log(data)
+        })
+    }
 
     // mapSlots() {
     //     let rects = this.SVG.querySelectorAll('rect');
