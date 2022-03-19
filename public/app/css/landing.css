@@ -67,8 +67,9 @@ header ul a:hover {
     position: relative;
     /* margin: 0 auto; */
     /* margin-top: 80px; */
-    background: rgb(35,35,35);
+    background: rgb(91 91 91);
     background-image: url(./../img/ship.JPEG);
+    background-blend-mode: multiply;
     background-position: center;
     background-size: cover;
 }
@@ -104,7 +105,8 @@ header ul a:hover {
     padding: 10px;
 }
 .box .buttons button {
-    background-color: #102233;
+    /* background-color: #102233; */
+    background-image: linear-gradient(137deg, #24527C, #001223);
     padding: 20px 40px;
     border: 1px solid #cdcac7;
     border-radius: 10px;
@@ -166,7 +168,8 @@ header ul a:hover {
 }
 .box .rodape p {
     padding: 10px;
-    background-color: #102233d4;
+    /* background-color: #102233d4; */
+    background-image: linear-gradient(137deg, #24527C, #001223);
     border-radius: 5px;
     text-align: center;
 }
@@ -179,9 +182,9 @@ header ul a:hover {
   align-items: center;
   justify-content: center;
   position: relative;
-  background: rgb(35,35,35);
+  background: rgb(91 91 91);
   background-image: url(./../img/ship.JPEG);
-  background-position: center;
+  background-blend-mode: multiply;
   background-size: cover;
 }
 .box2 .title {

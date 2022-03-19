@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="./app/">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pula Pirata | Room</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/room.css">
+    <link rel="stylesheet" href="css/lobby.css">
+</head>
+<body>
+
+    <div class="splash-screen">
+        <div class="splash-screen-img"></div>
+        <div class="splash-screen-msg">Carregando...</div>
+    </div>
+
+    <div class="error"><!-- msg --></div>
+
+    <div class="render"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="controllers/session.js"></script>
+    <script src="controllers/splash-screen.js"></script>
+    <script src="controllers/error.js"></script>
+    <script src="controllers/modal.js"></script>
+    <script src="controllers/header.js"></script>
+    <script src="controllers/game.js"></script>
+
+    <script>
+        const GAME = new game();
+    </script>
+</body>
+</html>
