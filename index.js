@@ -23,10 +23,14 @@ io.on('connection', (socket) => {
     // connect lobby
     socket.on('connect-lobby', (data) => {
         // adicionando o socket_id
-        // data.socket_id = socket.id;
-        // data.connected = true;
+        data.user_socket_id = socket.id;
+        
+        const room = user_connections.createRoom(data)
+        const user = user_connections.createUser(data)
+        room.players.push(user)
+
         // adicionando ao array de conexões
-        user_connections.addData(data);
+        user_connections.addData(room);
 
         // emitando o total para o próprio usuário
         socket.emit('users', {

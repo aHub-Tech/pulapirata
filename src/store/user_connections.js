@@ -38,6 +38,44 @@ const user_connections = {
         "ff5722" // laranja
     ],
     data: [],
+    modelRoom: {
+        room_id: '',
+        room_owner: '',
+        room_pass: '',
+        room_privated: false,
+        room_status: 0, // 0: ABERTO / 1: CHEIO /  2: GAME 
+        room_date_time: Date.now(),
+        room_time_turn: 0,
+        players: [],
+        slots: []
+    },
+    modelUser: {
+        user_id: '',
+        user_name: '',
+        user_color: '',
+        user_status: 0, // 0: ONLINE / 1: OFFLINE
+        user_socket_id: ''
+    },
+    createRoom (data) {
+        let room = this.data.find(e => e.room_id === data.room_id)
+        if (room) return room
+        
+        room = this.modelRoom
+        room.room_id = data.room_id
+        room.room_owner = (data.room_owner) ? data.user_name : ''
+        room.pass = (data.room_pass) ? data.room_pass : ''
+        room.privated = (data.room_pass) ? true : false
+        return room
+    },
+    createUser (data) {
+        const user = this.modelUser
+        user.user_id = data.user_id,
+        user.user_name = data.user_name
+        user.user_color = (data.user_color) ? data.user_color : ''
+        user.user_socket_id = data.user_socket_id
+        return user
+
+    },
     getDataByUserId(user_id) {
         return this.data.find(d => d.user_id === user_id)
     },
@@ -52,36 +90,19 @@ const user_connections = {
         return this.data
     },
     addData(data) {
-        console.log(data)
         // data.socket_id = socket.id;
         // data.connected = true;
 
-        room = this.data.find(d => d.room_id = data.room_id);
-        if (!room) {
-            room = {
-                room_id: data.room_id,
-                room_owner: 'cafe',
-                room_pass: '123',
-                room_status: 'ABERTO',
-                room_date_time: '',
-                room_time_turn: '',
-                players: [
-                    {
-                        user_id: data.user_id,
-                        user_name: data.user_name,
-                        user_color: '',
-                        user_status: 'ONLINE'
-                    }
-                ],
-                slots: []
-            }
-        }else{
+        this.data.map(e => {
+            
+        })
+        // if (!room) {
+        //     this.data.push(data) 
+        // }else{
+        //     console.log('teste')
+        // }
 
-        }
-
-        console.log(room);
-
-        this.data = room;
+        // console.log(this.data)
     },
     updateUser(user) {
         const i = this.data.findIndex(d => d.user_id == user.user_id)
