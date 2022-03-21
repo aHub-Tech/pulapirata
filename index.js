@@ -23,8 +23,8 @@ io.on('connection', (socket) => {
     // connect lobby
     socket.on('connect-lobby', (data) => {
         // adicionando o socket_id
-        data.socket_id = socket.id;
-        data.connected = true;
+        // data.socket_id = socket.id;
+        // data.connected = true;
         // adicionando ao array de conexões
         user_connections.addData(data);
 
@@ -52,7 +52,8 @@ io.on('connection', (socket) => {
         user_connections.setRoomOwner(data.user_id, true)
         user_connections.setRoomTimer(data.user_id)
         user_connections.setRoomPass(data.user_id, data.room_pass)
-        
+        user_connections.getRoomPlayers(room_id)
+
         socket.emit('create-room-confirmed', (user_connections.getPublicDataUser(data.user_id)))
 
         for (conn of user_connections.getData()) {

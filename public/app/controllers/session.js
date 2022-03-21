@@ -41,6 +41,7 @@ class session {
 
     setRoomID (room_id) {
         this.DATA.room_id = room_id;
+
         localStorage.setItem('session', JSON.stringify(this.DATA));
         return this.DATA;
     }

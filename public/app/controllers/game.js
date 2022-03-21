@@ -28,7 +28,7 @@ class game {
         if (!this.SESSION.isValid()) {
             return window.location.replace('/login')
         }
-        
+
         // verificando se está em uma sala ou no lobby
         const page = this.SESSION.inRoom() ? 'room' : 'lobby'
         this.render(page);
@@ -59,6 +59,9 @@ class game {
         .then(r=> r.text())
         .then(r=> r)
 
+        // limpando a splash
+        this.SPLASH_SCREEN.closeSplash()
+
         this.RENDER.innerHTML = html
 
         // alimentando a header
@@ -66,10 +69,6 @@ class game {
             room: `#${(this.SESSION.inRoom() ? this.SESSION.inRoom() : 'LOBBY')}`,
             user: (this.SESSION.getName().split(' ')[0])
         });
-
-        setTimeout(() => {
-            this.MODAL.close()
-        }, [500])
 
         if (page=='lobby') {
             this.inLobby()
@@ -104,17 +103,20 @@ class game {
             if (e.room_id!=='lobby') {
                 if (!rooms[e.room_id]) {
                     rooms[e.room_id] = {
-                        privated: e.privated,
-                        status: e.status,
-                        owner_name: e.owner_name,
+                        privated: e.room_privated,
+                        status: e.room_status,
+                        // owner_name: ((e.room_owner) ? e.user_name : ''),
                         players: [e]
                     };
                 }else{
                     rooms[e.room_id].players.push(e);
                 }
+                rooms[e.room_id].owner_name = ((e.room_owner) ? e.user_name : '')
                 countRooms++
             }
         })
+
+        this.ROOMS = rooms
 
         if (countRooms) {
             this.renderRooms(rooms);
@@ -128,8 +130,6 @@ class game {
         let body = '';
 
         for(const i in rooms) {
-
-            console.log(rooms[i].room_id)
             
             // if (rooms[i].room_id)
 
@@ -167,7 +167,7 @@ class game {
                 </div>
             `;
 
-            this.BOX.innerHTML = body;
+            this.BOX.innerHTML = body
         };
     }
 
@@ -241,6 +241,60 @@ class game {
         this.socket.on('connect-room-confirmed', (data) => {
             console.log(data)
         })
+    }
+
+    enterRoom (id_room) {
+
+        for (const r in this.ROOMS) {
+            const e = this.ROOMS[r]
+
+            if (parseInt(r) === parseInt(id_room)) {
+
+                return console.log(e)
+                
+                // verificando se está cheia
+                if(parseInt(e.players)>=4) return this.ERROR.showError("A sala está cheia!");
+
+                if (e.status !== 'REGISTER') return this.ERROR.showError("Não é mais possível participar desta sala!");
+
+                if (parseInt(e.privated)) {
+                    this.MODAL.show({
+                        header: `
+                            <h3>Sala de ${e.owner_name}</h3>
+                            <small>Sala privada, entre com a senha para ter acesso</small>
+                        `,
+                        content:`
+                            <div class="inline">
+                                <div class="input-group"">
+                                    <label>Senha:</label>
+                                    <input type="password" placeholder="Insira a senha para acessar a sala" name="pass_room_access"/>
+                                </div>
+                                <button onclick="LOBBY.confirmEnterRoom(${e.id})">Acessar</button>
+                                <button class="btn-brown" onclick="LOBBY.MODAL.close()">Cancelar</button>
+                            </div>
+                        `
+                    });
+                }else{
+                    let obj = {
+                        iduser: this.SESSION.getUserId(),
+                        idroom: e.id,
+                        pass: ''
+                    };
+                    this.access(obj);
+                }
+            }
+        };
+    }
+
+    confirmEnterRoom (id) {
+        let obj = {};
+        obj.iduser = this.SESSION.getUserId();
+        obj.idroom = id;
+        obj.pass = document.querySelector('input[name=pass_room_access').value;
+        if (obj.pass==='') return this.ERROR.showError('Insira a senha para acessar a sala!');
+        obj.pass = CryptoJS.MD5(obj.pass).toString();
+
+        this.access (obj);
     }
 
     // mapSlots() {

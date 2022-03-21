@@ -52,36 +52,7 @@ const user_connections = {
         return this.data
     },
     addData(data) {
-        console.log(data)
-        // data.socket_id = socket.id;
-        // data.connected = true;
-
-        room = this.data.find(d => d.room_id = data.room_id);
-        if (!room) {
-            room = {
-                room_id: data.room_id,
-                room_owner: 'cafe',
-                room_pass: '123',
-                room_status: 'ABERTO',
-                room_date_time: '',
-                room_time_turn: '',
-                players: [
-                    {
-                        user_id: data.user_id,
-                        user_name: data.user_name,
-                        user_color: '',
-                        user_status: 'ONLINE'
-                    }
-                ],
-                slots: []
-            }
-        }else{
-
-        }
-
-        console.log(room);
-
-        this.data = room;
+        this.data.push(data)
     },
     updateUser(user) {
         const i = this.data.findIndex(d => d.user_id == user.user_id)
