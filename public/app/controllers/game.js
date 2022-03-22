@@ -89,83 +89,86 @@ class game {
         })
 
         // recebendo lista de usuários atualizada a cada nova conexão
-        this.socket.on('users', (data) => {
+        this.socket.on('data', (data) => {
             console.log(data)
-            this.getRooms(data)
+            this.renderRooms(data)
         })
 
     }
 
     getRooms(data) {
-        const rooms = [];
-        let countRooms = 0;
-        data.users.forEach(e => {
-            if (e.room_id!=='lobby') {
-                if (!rooms[e.room_id]) {
-                    rooms[e.room_id] = {
-                        privated: e.room_privated,
-                        status: e.room_status,
-                        // owner_name: ((e.room_owner) ? e.user_name : ''),
-                        players: [e]
-                    };
-                }else{
-                    rooms[e.room_id].players.push(e);
-                }
-                rooms[e.room_id].owner_name = ((e.room_owner) ? e.user_name : '')
-                countRooms++
-            }
-        })
+        // const rooms = [];
+        // let countRooms = 0;
+        // data.data.forEach(e => {
+        //     if (e.room_id!=='lobby') {
+        //         if (!rooms[e.room_id]) {
+        //             rooms[e.room_id] = {
+        //                 privated: e.room_privated,
+        //                 status: e.room_status,
+        //                 // owner_name: ((e.room_owner) ? e.user_name : ''),
+        //                 players: [e]
+        //             };
+        //         }else{
+        //             rooms[e.room_id].players.push(e);
+        //         }
+        //         rooms[e.room_id].owner_name = ((e.room_owner) ? e.user_name : '')
+        //         countRooms++
+        //     }
+        // })
 
-        this.ROOMS = rooms
+        // this.ROOMS = rooms
 
-        if (countRooms) {
-            this.renderRooms(rooms);
-        }else{
-            let body = `<div class="info">Nenhuma sala encontrada</div>`;
-            this.BOX.innerHTML = body;
-        }
+        // if (countRooms) {
+        //     this.renderRooms(rooms);
+        // }else{
+        //     let body = `<div class="info">Nenhuma sala encontrada</div>`;
+        //     this.BOX.innerHTML = body;
+        // }
+
+        console.log(data)
     }
 
-    renderRooms (rooms) {
+    renderRooms (data) {
         let body = '';
 
-        for(const i in rooms) {
-            
-            // if (rooms[i].room_id)
+        for(const room of data.data) {
 
-            let privated = (rooms[i].privated) ? '<img style="max-width:12px"; src="./../img/lock.svg">' : '';
+            if (room.room_id!=='lobby') {
             
-            let players = '';
-            rooms[i].players.map(e => {
-                players += e.user_name.split(' ')[0] + ' | ';
-            });
-            players = players.slice(0, -3);
-            
-            body += `
-                <div class="card" title="Entrar na sala #${i}" onclick="GAME.enterRoom(${i})">
-                    <div class="header">
-                        <div class="left">
-                            ${privated} 
-                            #${i}
+                let privated = (room.room_privated) ? '<img style="max-width:12px"; src="./../img/lock.svg">' : '';
+                
+                let players = '';
+                room.room_players.map(e => {
+                    players += e.user_name.split(' ')[0] + ' | ';
+                });
+                players = players.slice(0, -3);
+                
+                body += `
+                    <div class="card" title="Entrar na sala #${room.room_id}" onclick="GAME.enterRoom(${room.room_id})">
+                        <div class="header">
+                            <div class="left">
+                                ${privated} 
+                                #${room.room_id}
+                            </div>
+                            <div class="right">${room.room_status}</div>
                         </div>
-                        <div class="right">${rooms[i].status}</div>
-                    </div>
-                    <div class="content">
-                        <div class="owner">OWNER</div>
-                        <div class="name_owner">${rooms[i].owner_name}</div>
-                    </div>
-                    <div class="footer">
-                        <div class="top">
-                            <div class="left">PLAYERS</div>
-                            <div class="right">${rooms[i].players.length}/4</div>
+                        <div class="content">
+                            <div class="owner">OWNER</div>
+                            <div class="name_owner">${room.room_owner}</div>
                         </div>
-                        <hr>
-                        <div class="bottom">
-                            ${players}
+                        <div class="footer">
+                            <div class="top">
+                                <div class="left">PLAYERS</div>
+                                <div class="right">${room.room_players.length}/4</div>
+                            </div>
+                            <hr>
+                            <div class="bottom">
+                                ${players}
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
+                `;
+            }
 
             this.BOX.innerHTML = body
         };
@@ -205,6 +208,8 @@ class game {
             this.SESSION.setRoomID(data.room_id)
             this.SESSION.setColor(data.user_color)
             this.SESSION.setRoomOwner(data.room_owner)
+
+            console.log(data)
 
             // window.location.replace(`/room#${this.SESSION.inRoom()}`);
 

@@ -25,27 +25,19 @@ io.on('connection', (socket) => {
         // adicionando o socket_id
         data.user_socket_id = socket.id;
         
-        const room = user_connections.createRoom(data)
-        const user = user_connections.createUser(data)
-
-        console.log(room)
-        console.log(user)
-
-        room.players.push(user)
-
-        // adicionando ao array de conexões
-        user_connections.addData(room);
+        const room = user_connections.createUpdateRoom(data)
+        const user = user_connections.createUpdateUser(data)
 
         // emitando o total para o próprio usuário
-        socket.emit('users', {
-            'users': user_connections.getData()
+        socket.emit('data', {
+            'data': user_connections.getPublicData()
         });
 
         // emitindo para todos os demais do lobby
         for(conn of user_connections.getOuthers(socket.id)) {
             if (conn.room_id === 'lobby') {
-                socket.to(conn.socket_id).emit('users', {
-                    'users': user_connections.getData()
+                socket.to(conn.user_socket_id).emit('data', {
+                    'data': user_connections.getPublicData()
                 });
             }
         }
@@ -55,17 +47,23 @@ io.on('connection', (socket) => {
     socket.on('create-room', (data) => {
         // const user = user_connections.getDataByUserId(data.user_id)
         const room_id = Date.now()
+        const user = user_connections.getDataByUserId(data.user_id)
+
+        data.room_id = room_id
+        data.room_owner = true
+        data.user_name = user.user_name
+
+        user_connections.createUpdateRoom(data)
+        
         user_connections.setUserColor(data.user_id)
         user_connections.setRoomId(data.user_id, room_id)
-        user_connections.setRoomOwner(data.user_id, true)
-        user_connections.setRoomTimer(data.user_id)
-        user_connections.setRoomPass(data.user_id, data.room_pass)
-        user_connections.getRoomPlayers(room_id)
 
-        socket.emit('create-room-confirmed', (user_connections.getPublicDataUser(data.user_id)))
+        socket.emit('create-room-confirmed', {
+            data: user_connections.getPublicRoomData(room_id)
+        })
 
-        for (conn of user_connections.getData()) {
-            socket.to(conn.socket_id).emit('users', {'users': user_connections.getPublicData (data.user_id)})
+        for (conn of user_connections.getOuthers()) {
+            socket.to(conn.user_socket_id).emit('data', {'data': user_connections.getPublicData ()})
         }
     });
 
@@ -76,9 +74,8 @@ io.on('connection', (socket) => {
     })
 
     socket.on('disconnect', () => {
-        // const user = user_connections.getDataBySocketId(socket.id)
+        const user = user_connections.getDataBySocketId(socket.id)
         // if (user) {
-        //     console.log(user)
         //     user.connected = false
         //     user_connections.updateUser(user)
         // }
