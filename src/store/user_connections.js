@@ -47,7 +47,8 @@ const user_connections = {
         room_privated: false,
         room_status: 0, // 0: ABERTO / 1: CHEIO /  2: GAME 
         room_date_time: Date.now(),
-        room_time_turn: 0
+        room_time_turn: 0,
+        room_turn_player: ''
     },
     modelUser: {
         user_id: '',
@@ -68,6 +69,7 @@ const user_connections = {
         room.room_owner = (data.room_owner) ? data.user_name : room.room_owner
         room.room_pass = (data.room_pass) ? data.room_pass : room.room_pass
         room.room_privated = (data.room_pass) ? true : false
+        room.room_turn_player = data.user_id
 
         if (index===-1) this.rooms.push(room)
         else this.rooms[index] = room
@@ -174,7 +176,8 @@ const user_connections = {
             user_color: this.data[i].user_color,
             room_id:  this.data[i].room_id,
             room_privated:  this.data[i].room_privated,
-            room_owner: this.data[i].room_owner
+            room_owner: this.data[i].room_owner,
+            room_turn_player: this.data[i].room_turn_player
         }
         return data
     },
@@ -186,13 +189,15 @@ const user_connections = {
     },
     getPublicRoomData (room_id) {
         const room = this.rooms.find(r => r.room_id === room_id)
+
         const publicData = {
             room_id: room.room_id,
             room_owner: room.room_owner,
             room_privated: room.room_privated,
             room_status: room.room_status,
             room_status_description: this.getStatusRoom(room.room_status),
-            room_players: this.players.filter(p => p.room_id === room.room_id)
+            room_players: this.players.filter(p => p.room_id === room.room_id),
+            room_turn_player: room.room_turn_player
         }
 
         return publicData
@@ -209,7 +214,8 @@ const user_connections = {
                 room_privated: room.room_privated,
                 room_status: room.room_status,
                 room_status_description: this.getStatusRoom(room.room_status),
-                room_players: this.players.filter(p => p.room_id === room.room_id)
+                room_players: this.players.filter(p => p.room_id === room.room_id),
+                room_turn_player: room.room_turn_player
             }
 
             publicData.push(r)

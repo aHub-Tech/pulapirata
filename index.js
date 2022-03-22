@@ -71,8 +71,6 @@ io.on('connection', (socket) => {
     socket.on('enter-room', (data) => {
         const user = user_connections.getDataByUserId(data.user_id)
         const room = user_connections.getRoomById(data.room_id)
-
-        console.log(room) 
         
         if (room.room_pass!==data.room_pass) {
             return socket.emit('not-authorized-room')
@@ -82,10 +80,10 @@ io.on('connection', (socket) => {
         user_connections.setRoomId(data.user_id, data.room_id)
 
         socket.emit('enter-room-confirmed', {
-            data: user_connections.getPublicRoomData()
+            data: user_connections.getPublicRoomData(data.room_id)
         })
 
-        for (conn of user_connections.getOuthers(socket_id)) {
+        for (conn of user_connections.getOuthers(socket.id)) {
             socket.to(conn.user_socket_id).emit('data', {'data': user_connections.getPublicData ()})
         }
     })

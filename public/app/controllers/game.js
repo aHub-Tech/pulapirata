@@ -96,38 +96,6 @@ class game {
 
     }
 
-    getRooms(data) {
-        // const rooms = [];
-        // let countRooms = 0;
-        // data.data.forEach(e => {
-        //     if (e.room_id!=='lobby') {
-        //         if (!rooms[e.room_id]) {
-        //             rooms[e.room_id] = {
-        //                 privated: e.room_privated,
-        //                 status: e.room_status,
-        //                 // owner_name: ((e.room_owner) ? e.user_name : ''),
-        //                 players: [e]
-        //             };
-        //         }else{
-        //             rooms[e.room_id].players.push(e);
-        //         }
-        //         rooms[e.room_id].owner_name = ((e.room_owner) ? e.user_name : '')
-        //         countRooms++
-        //     }
-        // })
-
-        // this.ROOMS = rooms
-
-        // if (countRooms) {
-        //     this.renderRooms(rooms);
-        // }else{
-        //     let body = `<div class="info">Nenhuma sala encontrada</div>`;
-        //     this.BOX.innerHTML = body;
-        // }
-
-        console.log(data)
-    }
-
     renderRooms (data) {
         let body = '';
 
@@ -205,13 +173,12 @@ class game {
         
         this.socket.emit('create-room', data);
         this.socket.on('create-room-confirmed', (data) => {
-            this.SESSION.setRoomID(data.room_id)
-            this.SESSION.setColor(data.user_color)
-            this.SESSION.setRoomOwner(data.room_owner)
 
-            console.log(data)
+            const me = data.data.room_players.find(e => e.user_id === this.SESSION.getUserId())
 
-            // window.location.replace(`/room#${this.SESSION.inRoom()}`);
+            this.SESSION.setRoomID(me.room_id)
+            this.SESSION.setColor(me.user_color)
+            // this.SESSION.setRoomOwner(me.room_owner)
 
             this.render('room')
         })
@@ -223,14 +190,17 @@ class game {
 
     // controles na room
     async inRoom() {
-        this
-        .SPLASH_SCREEN
-        .showSplash(`
-            <p>Aguardando mais piratas no convés...</p>
-                <center>
-                    <button class="btn-red" onclick="GAME.cancelRoom()">Cancelar Sala</button>
-               </center>
-        `);
+        this.PLAYERS = document.querySelector('div.players');
+        this.SVG = document.querySelector('svg');
+
+        // this
+        // .SPLASH_SCREEN
+        // .showSplash(`
+        //     <p>Aguardando mais piratas no convés...</p>
+        //         <center>
+        //             <button class="btn-red" onclick="GAME.cancelRoom()">Cancelar Sala</button>
+        //        </center>
+        // `);
 
         // conectando a room
         this.socket.emit('connect-room', {
@@ -303,7 +273,8 @@ class game {
     access (obj) {
 
         this.MODAL.close();
-        this.SPLASH_SCREEN.showSplash();
+        // this.SPLASH_SCREEN.showSplash();
+        
 
         this.socket.emit('enter-room', (obj))
 
@@ -315,9 +286,179 @@ class game {
 
         // confirma entrada na sala
         this.socket.on('enter-room-confirmed', (data) => {
-            console.log('acesso a room confirmada', data)
+            
+            const me = data.data.room_players.find(e => e.user_id === this.SESSION.getUserId())
+
+            this.SESSION.setRoomID(me.room_id)
+            this.SESSION.setColor(me.user_color)
+
+            this.render('room')
+
+            this.showPlayers(data.data)
         })
     }
+
+
+    // --- room controller
+
+    showPlayers (data) {
+
+        if (data.room_players.length>=1) {
+            let inRoom = false;
+            let li = '';
+            let ul = this.PLAYERS.querySelector('ul');
+            let move = this.PLAYERS.querySelector('span');
+
+            data.room_players.forEach(e => {
+                li += `
+                <li>
+                    <div class="player">
+                        <div class="avatar" style="border: 5px solid #${e.user_color};">
+                            <!-- 
+                                <img src="https://store.playstation.com/store/api/chihiro/00_09_000/container/GB/en/19/EP4312-NPEB00474_00-AVSMOBILET000288/image?w=320&h=320&bg_color=000000&opacity=100&_version=00_09_000">
+                            -->
+                        </div>
+                        <div class="name"> ${e.user_name.split(' ')[0]} </div>
+                    </div>
+                </li>
+                `;
+
+                // verificando jogador da vez
+                if (data.room_turn_player === e.user_id) {
+                    move.innerHTML = `${e.user_name.split(' ')[0]}`;
+                }
+            });
+
+            ul.innerHTML = li;
+
+            // chamar função para tela de iniciar jogo, se status = REGISTER
+            // this.ready(data);
+        }
+    }
+
+    ready (data) {
+
+        if (data.room_status === 0 && data.room_players.length>1)  {
+
+            // verificando se o jogador é o dono da sala
+            if (this.SESSION.getUserId() === this.STATE.room.owner) {
+                this.SPLASH_SCREEN.closeSplash();
+
+                this.MODAL.close();
+                this.MODAL.show({
+                    header:`
+                        <h3>PRONTO PARA INICIAR O JOGO</h3>
+                        <small>Você já pode iniciar o jogo ou aguardar mais jogadores</small>
+                    `,
+                    content: `
+                        <button onclick="ROOM.start()">Iniciar Jogo</button>
+                    `
+                });
+            }else{
+                this.SPLASH_SCREEN.showSplash('Aguardando o capitão iniciar a partida...');
+            }
+        }
+        if (this.STATE.room.status === 'INPROGRESS' && this.LOCALSTATUS !== this.STATE.room.status) {
+            this.SPLASH_SCREEN.closeSplash();
+            this.LOCALSTATUS = this.STATE.room.status;
+        } 
+        if (this.STATE.room.status === 'FINISH' && this.LOCALSTATUS !== this.STATE.room.status) {
+            this.SPLASH_SCREEN.closeSplash();
+            this.LOCALSTATUS = this.STATE.room.status;
+            
+
+            let player = this.STATE.players.filter(e => parseInt(e.move))[0];
+            
+            let td = ``;
+            this.STATE.players.map(e => {
+                td += `
+                    <tr>
+                        <td>${e.user_name}</td>
+                        <td>${e.points}</td>
+                    </tr>
+                `;
+            });
+
+            // adicionando animação de salto do pirata
+            document.querySelector('.game img').classList.remove('pirateAnimation');
+            document.querySelector('.game img').classList.add('jumpAnimationTop');
+
+            setTimeout(_=> {
+                this.MODAL.close();
+                this.MODAL.show({
+                    header:`
+                        <h3>OPA!!! PULA PIRATA!!!</h3>
+                    `,
+                    content: `
+                        <div class="finish">
+                            <p>
+                                <span>${player.user_name.split(' ')[0]}</span>
+                                FEZ O PIRATA PULAR!!!
+                            </p>
+                            <div>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <td>User</td>
+                                            <td>Points</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${td}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div><small>Você será enviado para o <a style="color: #a90d5c;cursor:pointer;" title="Ir para o lobby" onclick="ROOM.lobby()">lobby<a> em 10 segundos</small></div>
+                        </div>
+                    `
+                });
+            }, 3000);
+
+            // levar o jogador para o lobby
+            setTimeout(_=> {
+                this.SESSION.setRoomID(null);
+                window.location.replace('./lobby.html');
+            }, 10000);
+        }
+        if (this.STATE.room.status === 'EXPIRED' && this.LOCALSTATUS !== this.STATE.room.status) {
+            this.SPLASH_SCREEN.closeSplash();
+            this.LOCALSTATUS = this.STATE.room.status;
+            
+
+            let td = ``;
+            this.STATE.players.map(e => {
+                td += `
+                    <tr>
+                        <td>${e.user_name}</td>
+                        <td>${e.points}</td>
+                    </tr>
+                `;
+            });
+
+            this.MODAL.close();
+            this.MODAL.show({
+                header:`
+                    <h3>O TEMPO DA SALA EXPIROU!</h3>
+                `,
+                content: `
+                    <div class="finish">
+                        <p>
+                            Os piratas demoraram de mais, o tempo da sala acabou!
+                        </p>
+                        <img style="max-width: 250px;" src="./../img/splash.gif">
+                        <div><small>Você será enviado para o <a style="color: #a90d5c;cursor:pointer;" title="Ir para o lobby" onclick="ROOM.lobby()">lobby<a> em 10 segundos</small></div>
+                    </div>
+                `
+            });
+
+            // levar o jogador para o lobby
+            setTimeout(_=> {
+                this.SESSION.setRoomID(null);
+                window.location.replace('./lobby.html');
+            }, 10000);
+        }
+    }
+
 
     // mapSlots() {
     //     let rects = this.SVG.querySelectorAll('rect');
