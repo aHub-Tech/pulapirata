@@ -63,11 +63,13 @@ const user_connections = {
         room = this.modelRoom
         room.room_id = data.room_id
         room.room_owner = (data.room_owner) ? data.user_name : ''
-        room.pass = (data.room_pass) ? data.room_pass : ''
-        room.privated = (data.room_pass) ? true : false
+        room.room_pass = (data.room_pass) ? data.room_pass : ''
+        room.room_privated = (data.room_pass) ? true : false
         return room
     },
     createUser (data) {
+        // let room = this.data.find(e => e.room_id === data.room_id)
+        
         const user = this.modelUser
         user.user_id = data.user_id,
         user.user_name = data.user_name
@@ -93,16 +95,16 @@ const user_connections = {
         // data.socket_id = socket.id;
         // data.connected = true;
 
-        this.data.map(e => {
-            
+        const index = this.data.findIndex(e => {
+            return e.room_id === data.room_id
         })
-        // if (!room) {
-        //     this.data.push(data) 
-        // }else{
-        //     console.log('teste')
-        // }
+        if (index===-1) {
+            this.data.push(data) 
+        }else{
+            this.data[index] = data
+        }
 
-        // console.log(this.data)
+        console.log(this.data)
     },
     updateUser(user) {
         const i = this.data.findIndex(d => d.user_id == user.user_id)

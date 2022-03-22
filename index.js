@@ -27,6 +27,10 @@ io.on('connection', (socket) => {
         
         const room = user_connections.createRoom(data)
         const user = user_connections.createUser(data)
+
+        console.log(room)
+        console.log(user)
+
         room.players.push(user)
 
         // adicionando ao array de conexões
