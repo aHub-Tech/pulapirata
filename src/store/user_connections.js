@@ -165,7 +165,10 @@ const user_connections = {
         return this.rooms[i]
     },
     getRoomPlayers (room_id) {
-        return this.data.filter(d => d.room_id === room_id);
+        return this.players.filter(d => d.room_id === room_id);
+    },
+    getOuthersRoomPlayers (room_id) {
+        return this.players.filter(d => d.room_id === room_id);
     },
     getPublicDataUser (user_id) {
         const i = this.players.findIndex(d => d.user_id == user_id)

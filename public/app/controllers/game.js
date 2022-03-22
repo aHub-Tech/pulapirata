@@ -172,7 +172,10 @@ class game {
         const data = {user_id: this.SESSION.getUserId(), room_pass: room_pass}
         
         this.socket.emit('create-room', data);
-        this.socket.on('create-room-confirmed', (data) => {
+        this.socket.on('create-room-confirmed', async (data) => {
+        // this.socket.on('data-room', async (data) => {
+
+            console.log(data)
 
             const me = data.data.room_players.find(e => e.user_id === this.SESSION.getUserId())
 
@@ -180,7 +183,9 @@ class game {
             this.SESSION.setColor(me.user_color)
             // this.SESSION.setRoomOwner(me.room_owner)
 
-            this.render('room')
+            await this.render('room')
+
+            this.showPlayers (data.data)
         })
     }
 
@@ -285,15 +290,16 @@ class game {
         })
 
         // confirma entrada na sala
-        this.socket.on('enter-room-confirmed', (data) => {
+        this.socket.on('enter-room-confirmed', async (data) => {
+        // this.socket.on('data-room', async (data) => {
             
             const me = data.data.room_players.find(e => e.user_id === this.SESSION.getUserId())
 
             this.SESSION.setRoomID(me.room_id)
             this.SESSION.setColor(me.user_color)
 
-            this.render('room')
-
+            await this.render('room')
+            
             this.showPlayers(data.data)
         })
     }
@@ -330,6 +336,7 @@ class game {
             });
 
             ul.innerHTML = li;
+            console.log(document.querySelector('div.players ul'))
 
             // chamar função para tela de iniciar jogo, se status = REGISTER
             // this.ready(data);

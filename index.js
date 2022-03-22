@@ -62,8 +62,8 @@ io.on('connection', (socket) => {
             data: user_connections.getPublicRoomData(room_id)
         })
 
-        for (conn of user_connections.getOuthers(socket.id)) {
-            socket.to(conn.user_socket_id).emit('data', {'data': user_connections.getPublicData ()})
+        for (conn of user_connections.getRoomPlayers(room_id)) {
+            socket.to(conn.user_socket_id).emit('data-room', {'data': user_connections.getPublicData ()})
         }
     });
 
