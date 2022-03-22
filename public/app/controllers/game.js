@@ -90,7 +90,7 @@ class game {
 
         // recebendo lista de usuários atualizada a cada nova conexão
         this.socket.on('data', (data) => {
-            console.log(data)
+            this.ROOMS = data.data
             this.renderRooms(data)
         })
 
@@ -135,7 +135,7 @@ class game {
 
             if (room.room_id!=='lobby') {
             
-                let privated = (room.room_privated) ? '<img style="max-width:12px"; src="./../img/lock.svg">' : '';
+                let privated = (room.room_privated) ? '<img style="max-width:12px"; src="./../app/img/lock.svg">' : '';
                 
                 let players = '';
                 room.room_players.map(e => {
@@ -150,7 +150,7 @@ class game {
                                 ${privated} 
                                 #${room.room_id}
                             </div>
-                            <div class="right">${room.room_status}</div>
+                            <div class="right">${room.room_status_description}</div>
                         </div>
                         <div class="content">
                             <div class="owner">OWNER</div>
@@ -193,7 +193,7 @@ class game {
     }
 
     confirmCreate () {
-        const room_pass = document.querySelector('input[name=pass_room]').value;
+        let room_pass = document.querySelector('input[name=pass_room]').value;
         if (room_pass !== '') room_pass = CryptoJS.MD5(room_pass).toString();
         
         this.MODAL.close();
@@ -242,30 +242,28 @@ class game {
             this.render('lobby')
             // window.location.replace('/lobby')
         })
-        // recebendo confirmação de coneção com a room
+        // recebendo confirmação de conexão com a room
         this.socket.on('connect-room-confirmed', (data) => {
             console.log(data)
         })
     }
 
-    enterRoom (id_room) {
+    enterRoom (room_id) {
 
-        for (const r in this.ROOMS) {
-            const e = this.ROOMS[r]
+        for (const e of this.ROOMS) {
 
-            if (parseInt(r) === parseInt(id_room)) {
+            if (parseInt(e.room_id) === parseInt(room_id)) {
 
-                return console.log(e)
-                
                 // verificando se está cheia
-                if(parseInt(e.players)>=4) return this.ERROR.showError("A sala está cheia!");
+                if(parseInt(e.room_players.length)>=4) return this.ERROR.showError("A sala está cheia!");
 
-                if (e.status !== 'REGISTER') return this.ERROR.showError("Não é mais possível participar desta sala!");
+                // status 0 = ABERTA / 1 = CHEIA / 2 = EM GAME
+                if (e.room_status !== 0) return this.ERROR.showError("Não é mais possível participar desta sala!");
 
-                if (parseInt(e.privated)) {
+                if (e.room_privated) {
                     this.MODAL.show({
                         header: `
-                            <h3>Sala de ${e.owner_name}</h3>
+                            <h3>Sala de ${e.room_owner}</h3>
                             <small>Sala privada, entre com a senha para ter acesso</small>
                         `,
                         content:`
@@ -274,16 +272,16 @@ class game {
                                     <label>Senha:</label>
                                     <input type="password" placeholder="Insira a senha para acessar a sala" name="pass_room_access"/>
                                 </div>
-                                <button onclick="LOBBY.confirmEnterRoom(${e.id})">Acessar</button>
-                                <button class="btn-brown" onclick="LOBBY.MODAL.close()">Cancelar</button>
+                                <button onclick="GAME.confirmEnterRoom(${e.room_id})">Acessar</button>
+                                <button class="btn-brown" onclick="GAME.MODAL.close()">Cancelar</button>
                             </div>
                         `
                     });
                 }else{
                     let obj = {
-                        iduser: this.SESSION.getUserId(),
-                        idroom: e.id,
-                        pass: ''
+                        user_id: this.SESSION.getUserId(),
+                        room_id: e.room_id,
+                        room_pass: ''
                     };
                     this.access(obj);
                 }
@@ -293,13 +291,32 @@ class game {
 
     confirmEnterRoom (id) {
         let obj = {};
-        obj.iduser = this.SESSION.getUserId();
-        obj.idroom = id;
-        obj.pass = document.querySelector('input[name=pass_room_access').value;
-        if (obj.pass==='') return this.ERROR.showError('Insira a senha para acessar a sala!');
-        obj.pass = CryptoJS.MD5(obj.pass).toString();
+        obj.user_id = this.SESSION.getUserId();
+        obj.room_id = id;
+        obj.room_pass = document.querySelector('input[name=pass_room_access').value;
+        if (obj.room_pass==='') return this.ERROR.showError('Insira a senha para acessar a sala!');
+        obj.room_pass = CryptoJS.MD5(obj.room_pass).toString();
 
         this.access (obj);
+    }
+
+    access (obj) {
+
+        this.MODAL.close();
+        this.SPLASH_SCREEN.showSplash();
+
+        this.socket.emit('enter-room', (obj))
+
+        // senha invalida
+        this.socket.on('not-authorized-room', () => {
+            this.SPLASH_SCREEN.closeSplash();
+            return this.ERROR.showError("Acesso não autorizado, tente novamente!");
+        })
+
+        // confirma entrada na sala
+        this.socket.on('enter-room-confirmed', (data) => {
+            console.log('acesso a room confirmada', data)
+        })
     }
 
     // mapSlots() {

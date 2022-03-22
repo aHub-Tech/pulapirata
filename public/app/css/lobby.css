@@ -9,6 +9,7 @@
     flex-wrap: wrap;
     /* padding-left:20px;
     padding-right:20px; */
+    font-size: 12px;
 }
 .card {
     max-height: 180px;
@@ -45,6 +46,7 @@
 .card .content .owner {
     color: #797979;
     font-size: 14px;
+    padding: 4px;
 }
 .card .footer {
     display: flex;

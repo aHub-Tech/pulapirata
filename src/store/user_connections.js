@@ -71,7 +71,7 @@ const user_connections = {
 
         if (index===-1) this.rooms.push(room)
         else this.rooms[index] = room
-        
+
         return room
     },
     createUpdateUser (data) {
@@ -138,6 +138,9 @@ const user_connections = {
         this.players[i].user_color = this.colors.find(c => this.players.find(u => u.user_color!=c && u.room_id==this.players[i].room_id))
         return this.players[i]
     },
+    getRoomById (room_id) {
+        return this.rooms.find(e => e.room_id = room_id)
+    },
     setRoomId (user_id, room_id) {
         const i = this.players.findIndex(d => d.user_id == user_id)
         this.players[i].room_id = room_id
@@ -154,10 +157,10 @@ const user_connections = {
         return this.data[i]
     },
     setRoomPass (user_id, room_pass) {
-        const i = this.data.findIndex(d => d.user_id == user_id)
-        this.data[i].room_pass = room_pass
-        this.data[i].room_privated = (room_pass !== '') ? true : false
-        return this.data[i]
+        const i = this.rooms.findIndex(d => d.user_id == user_id)
+        this.rooms[i].room_pass = room_pass
+        this.rooms[i].room_privated = (room_pass !== '') ? true : false
+        return this.rooms[i]
     },
     getRoomPlayers (room_id) {
         return this.data.filter(d => d.room_id === room_id);
@@ -187,7 +190,8 @@ const user_connections = {
             room_id: room.room_id,
             room_owner: room.room_owner,
             room_privated: room.room_privated,
-            room_status: this.getStatusRoom(room.room_status),
+            room_status: room.room_status,
+            room_status_description: this.getStatusRoom(room.room_status),
             room_players: this.players.filter(p => p.room_id === room.room_id)
         }
 
@@ -203,7 +207,8 @@ const user_connections = {
                 room_id: room.room_id,
                 room_owner: room.room_owner,
                 room_privated: room.room_privated,
-                room_status: this.getStatusRoom(room.room_status),
+                room_status: room.room_status,
+                room_status_description: this.getStatusRoom(room.room_status),
                 room_players: this.players.filter(p => p.room_id === room.room_id)
             }
 

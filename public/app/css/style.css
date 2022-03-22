@@ -12,7 +12,8 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
     background-blend-mode: luminosity;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+    font-family: 'Press Start 2P', cursive;
     width: 100%;
     height: 100vh;
 }
@@ -333,6 +334,7 @@ rect:hover {
 
 /* splash screen */
 .splash-screen {
+    top: 0;
     position: fixed;
     width: 100%;
     height: 100vh;

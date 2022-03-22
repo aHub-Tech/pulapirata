@@ -62,10 +62,33 @@ io.on('connection', (socket) => {
             data: user_connections.getPublicRoomData(room_id)
         })
 
-        for (conn of user_connections.getOuthers()) {
+        for (conn of user_connections.getOuthers(socket.id)) {
             socket.to(conn.user_socket_id).emit('data', {'data': user_connections.getPublicData ()})
         }
     });
+
+    // enter room
+    socket.on('enter-room', (data) => {
+        const user = user_connections.getDataByUserId(data.user_id)
+        const room = user_connections.getRoomById(data.room_id)
+
+        console.log(room) 
+        
+        if (room.room_pass!==data.room_pass) {
+            return socket.emit('not-authorized-room')
+        }
+
+        user_connections.setUserColor(data.user_id)
+        user_connections.setRoomId(data.user_id, data.room_id)
+
+        socket.emit('enter-room-confirmed', {
+            data: user_connections.getPublicRoomData()
+        })
+
+        for (conn of user_connections.getOuthers(socket_id)) {
+            socket.to(conn.user_socket_id).emit('data', {'data': user_connections.getPublicData ()})
+        }
+    })
 
     // connect room
     socket.on('connect-room', (data) => {
