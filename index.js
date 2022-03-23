@@ -62,7 +62,9 @@ io.on('connection', (socket) => {
             data: user_connections.getPublicRoomData(room_id)
         })
 
-        for (conn of user_connections.getRoomPlayers(room_id)) {
+        // for (conn of user_connections.getRoomPlayers(room_id)) {
+        for (conn of user_connections.getOuthers(socket.id)) {
+            console.log(conn.user_socket_id)
             socket.to(conn.user_socket_id).emit('data-room', {'data': user_connections.getPublicData ()})
         }
     });
@@ -84,6 +86,7 @@ io.on('connection', (socket) => {
         })
 
         for (conn of user_connections.getOuthers(socket.id)) {
+            console.log(conn)
             socket.to(conn.user_socket_id).emit('data', {'data': user_connections.getPublicData ()})
         }
     })

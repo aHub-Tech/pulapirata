@@ -175,8 +175,6 @@ class game {
         this.socket.on('create-room-confirmed', async (data) => {
         // this.socket.on('data-room', async (data) => {
 
-            console.log(data)
-
             const me = data.data.room_players.find(e => e.user_id === this.SESSION.getUserId())
 
             this.SESSION.setRoomID(me.room_id)
@@ -220,6 +218,13 @@ class game {
         // recebendo confirmação de conexão com a room
         this.socket.on('connect-room-confirmed', (data) => {
             console.log(data)
+        })
+
+        // recebendo dados da sala
+        this.socket.on('data-room', async (data) => {
+            console.log(data)
+            // await this.render('room')  
+            // this.showPlayers(data.data)
         })
     }
 
