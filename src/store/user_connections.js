@@ -66,7 +66,8 @@ const user_connections = {
         else room = this.rooms[index]
 
         room.room_id = data.room_id
-        room.room_owner = (data.room_owner) ? data.user_name : room.room_owner
+        room.room_owner = (data.room_owner) ? data.user_id : room.room_owner
+        room.room_owner_name = (data.room_owner) ? data.user_name : room.room_owner_name
         room.room_pass = (data.room_pass) ? data.room_pass : room.room_pass
         room.room_privated = (data.room_pass) ? true : false
         room.room_turn_player = data.user_id
@@ -196,6 +197,7 @@ const user_connections = {
         const publicData = {
             room_id: room.room_id,
             room_owner: room.room_owner,
+            room_owner_name: room.room_owner_name,
             room_privated: room.room_privated,
             room_status: room.room_status,
             room_status_description: this.getStatusRoom(room.room_status),
@@ -214,6 +216,7 @@ const user_connections = {
             const r = {
                 room_id: room.room_id,
                 room_owner: room.room_owner,
+                room_owner_name: room.room_owner_name,
                 room_privated: room.room_privated,
                 room_status: room.room_status,
                 room_status_description: this.getStatusRoom(room.room_status),

@@ -32,26 +32,6 @@ class game {
         // verificando se está em uma sala ou no lobby
         const page = this.SESSION.inRoom() ? 'room' : 'lobby'
         this.render(page);
-
-        console.log(this.SESSION)
-        
-        // consulta toda a state da room
-        // this.getState();
-        // setInterval(_=> {
-        //     if (this.STATE.room.status === 'FINISH') return false;
-        //     this.getState();
-        // }, 5000);
-
-        // this.socket.emit('connect-room', {
-        //     user_id: this.SESSION.getUserId()
-        // })
-        // this.socket.on('not-connect', () => {
-        //     this.SESSION.setRoomID('lobby')
-        //     window.location.replace('/lobby')
-        // })
-        // this.socket.on('connect-room-confirmed', (data) => {
-        //     console.log(data)
-        // })
     }
 
     async render (page) {
@@ -122,7 +102,7 @@ class game {
                         </div>
                         <div class="content">
                             <div class="owner">OWNER</div>
-                            <div class="name_owner">${room.room_owner}</div>
+                            <div class="name_owner">${room.room_owner_name}</div>
                         </div>
                         <div class="footer">
                             <div class="top">
@@ -173,8 +153,7 @@ class game {
         
         this.socket.emit('create-room', data);
         this.socket.on('create-room-confirmed', async (data) => {
-        // this.socket.on('data-room', async (data) => {
-
+        
             const me = data.data.room_players.find(e => e.user_id === this.SESSION.getUserId())
 
             this.SESSION.setRoomID(me.room_id)
@@ -184,6 +163,15 @@ class game {
             await this.render('room')
 
             this.showPlayers (data.data)
+
+            this
+            .SPLASH_SCREEN
+            .showSplash(`
+                <p>Aguardando mais piratas no convés...</p>
+                    <center>
+                        <button class="btn-red" onclick="GAME.cancelRoom()">Cancelar Sala</button>
+                </center>
+            `);
         })
     }
 
@@ -196,15 +184,6 @@ class game {
         this.PLAYERS = document.querySelector('div.players');
         this.SVG = document.querySelector('svg');
 
-        // this
-        // .SPLASH_SCREEN
-        // .showSplash(`
-        //     <p>Aguardando mais piratas no convés...</p>
-        //         <center>
-        //             <button class="btn-red" onclick="GAME.cancelRoom()">Cancelar Sala</button>
-        //        </center>
-        // `);
-
         // conectando a room
         this.socket.emit('connect-room', {
             user_id: this.SESSION.getUserId()
@@ -215,16 +194,10 @@ class game {
             this.render('lobby')
             // window.location.replace('/lobby')
         })
-        // recebendo confirmação de conexão com a room
-        this.socket.on('connect-room-confirmed', (data) => {
-            console.log(data)
-        })
-
-        // recebendo dados da sala
+        
+        // recebendo dados da sala deoutros jogadores
         this.socket.on('data-room', async (data) => {
-            console.log(data)
-            // await this.render('room')  
-            // this.showPlayers(data.data)
+            this.showPlayers(data.data)
         })
     }
 
@@ -243,7 +216,7 @@ class game {
                 if (e.room_privated) {
                     this.MODAL.show({
                         header: `
-                            <h3>Sala de ${e.room_owner}</h3>
+                            <h3>Sala de ${e.room_owner_name}</h3>
                             <small>Sala privada, entre com a senha para ter acesso</small>
                         `,
                         content:`
@@ -306,6 +279,10 @@ class game {
             await this.render('room')
             
             this.showPlayers(data.data)
+
+            this
+            .SPLASH_SCREEN
+            .showSplash(`<p>Aguardando mais piratas no convés...</p>`);
         })
     }
 
@@ -341,10 +318,9 @@ class game {
             });
 
             ul.innerHTML = li;
-            console.log(document.querySelector('div.players ul'))
-
+            
             // chamar função para tela de iniciar jogo, se status = REGISTER
-            // this.ready(data);
+            this.ready(data);
         }
     }
 
@@ -353,7 +329,7 @@ class game {
         if (data.room_status === 0 && data.room_players.length>1)  {
 
             // verificando se o jogador é o dono da sala
-            if (this.SESSION.getUserId() === this.STATE.room.owner) {
+            if (this.SESSION.getUserId() === data.room_owner) {
                 this.SPLASH_SCREEN.closeSplash();
 
                 this.MODAL.close();
@@ -370,10 +346,10 @@ class game {
                 this.SPLASH_SCREEN.showSplash('Aguardando o capitão iniciar a partida...');
             }
         }
-        if (this.STATE.room.status === 'INPROGRESS' && this.LOCALSTATUS !== this.STATE.room.status) {
-            this.SPLASH_SCREEN.closeSplash();
-            this.LOCALSTATUS = this.STATE.room.status;
-        } 
+        // if (this.STATE.room.status === 'INPROGRESS' && this.LOCALSTATUS !== this.STATE.room.status) {
+        //     this.SPLASH_SCREEN.closeSplash();
+        //     this.LOCALSTATUS = this.STATE.room.status;
+        // } 
         if (this.STATE.room.status === 'FINISH' && this.LOCALSTATUS !== this.STATE.room.status) {
             this.SPLASH_SCREEN.closeSplash();
             this.LOCALSTATUS = this.STATE.room.status;

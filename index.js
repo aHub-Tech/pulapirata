@@ -64,8 +64,7 @@ io.on('connection', (socket) => {
 
         // for (conn of user_connections.getRoomPlayers(room_id)) {
         for (conn of user_connections.getOuthers(socket.id)) {
-            console.log(conn.user_socket_id)
-            socket.to(conn.user_socket_id).emit('data-room', {'data': user_connections.getPublicData ()})
+            socket.to(conn.user_socket_id).emit('data', {'data': user_connections.getPublicData ()})
         }
     });
 
@@ -86,8 +85,13 @@ io.on('connection', (socket) => {
         })
 
         for (conn of user_connections.getOuthers(socket.id)) {
-            console.log(conn)
-            socket.to(conn.user_socket_id).emit('data', {'data': user_connections.getPublicData ()})
+            // players in room
+            if(conn.room_id===room.room_id) {
+                socket.to(conn.user_socket_id).emit('data-room', {'data': user_connections.getPublicRoomData(data.room_id)})
+            // outhers users
+            }else{
+                socket.to(conn.user_socket_id).emit('data', {'data': user_connections.getPublicData ()})
+            }
         }
     })
 
