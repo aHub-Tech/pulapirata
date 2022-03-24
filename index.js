@@ -68,8 +68,14 @@ io.on('connection', (socket) => {
         }
     });
 
+    // map slots
+    socket.on('map-slots', (data) => {
+        user_connections.createUpdateSlots (data)
+    })
+
     // enter room
     socket.on('enter-room', (data) => {
+
         const user = user_connections.getDataByUserId(data.user_id)
         const room = user_connections.getRoomById(data.room_id)
         

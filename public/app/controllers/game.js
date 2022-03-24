@@ -149,7 +149,10 @@ class game {
 
         this.SPLASH_SCREEN.closeSplash();
 
-        const data = {user_id: this.SESSION.getUserId(), room_pass: room_pass}
+        const data = {
+            user_id: this.SESSION.getUserId(), 
+            room_pass: room_pass
+        }
         
         this.socket.emit('create-room', data);
         this.socket.on('create-room-confirmed', async (data) => {
@@ -161,6 +164,8 @@ class game {
             // this.SESSION.setRoomOwner(me.room_owner)
 
             await this.render('room')
+
+            this.socket.emit('map-slots', this.mapSlots(data.data))
 
             this.showPlayers (data.data)
 
@@ -327,8 +332,10 @@ class game {
     ready (data) {
 
         if (data.room_status === 0 && data.room_players.length>1)  {
+            console.log('status 0: aberto')
 
             // verificando se o jogador é o dono da sala
+            console.log(data)
             if (this.SESSION.getUserId() === data.room_owner) {
                 this.SPLASH_SCREEN.closeSplash();
 
@@ -346,23 +353,25 @@ class game {
                 this.SPLASH_SCREEN.showSplash('Aguardando o capitão iniciar a partida...');
             }
         }
-        // if (this.STATE.room.status === 'INPROGRESS' && this.LOCALSTATUS !== this.STATE.room.status) {
-        //     this.SPLASH_SCREEN.closeSplash();
-        //     this.LOCALSTATUS = this.STATE.room.status;
-        // } 
-        if (this.STATE.room.status === 'FINISH' && this.LOCALSTATUS !== this.STATE.room.status) {
+        if (data.room_status === 2) {
+            console.log('status 2: game')
             this.SPLASH_SCREEN.closeSplash();
-            this.LOCALSTATUS = this.STATE.room.status;
+            // this.LOCALSTATUS = this.STATE.room.status;
+        } 
+        if (data.room_status === 3) {
+            console.log('status 3: finalizado')
+            this.SPLASH_SCREEN.closeSplash();
+            // this.LOCALSTATUS = this.STATE.room.status;
             
 
-            let player = this.STATE.players.filter(e => parseInt(e.move))[0];
+            let player = data.room_players.find(p => p.user_id === data.room_turn_player);
             
             let td = ``;
-            this.STATE.players.map(e => {
+            data.room_players.map(p => {
                 td += `
                     <tr>
-                        <td>${e.user_name}</td>
-                        <td>${e.points}</td>
+                        <td>${p.user_name}</td>
+                        <td>${p.points}</td>
                     </tr>
                 `;
             });
@@ -403,22 +412,24 @@ class game {
             }, 3000);
 
             // levar o jogador para o lobby
-            setTimeout(_=> {
-                this.SESSION.setRoomID(null);
-                window.location.replace('./lobby.html');
-            }, 10000);
+            // setTimeout(_=> {
+            //     this.SESSION.setRoomID(null);
+            //     window.location.replace('./lobby.html');
+            // }, 10000);
         }
-        if (this.STATE.room.status === 'EXPIRED' && this.LOCALSTATUS !== this.STATE.room.status) {
+        // tempo da sala expirado
+        if (data.room_status === 4) {
+            console.log('status 4: expirado')
             this.SPLASH_SCREEN.closeSplash();
-            this.LOCALSTATUS = this.STATE.room.status;
+            // this.LOCALSTATUS = this.STATE.room.status;
             
 
             let td = ``;
-            this.STATE.players.map(e => {
+            data.room_players.map(p => {
                 td += `
                     <tr>
-                        <td>${e.user_name}</td>
-                        <td>${e.points}</td>
+                        <td>${p.user_name}</td>
+                        <td>${p.points}</td>
                     </tr>
                 `;
             });
@@ -434,47 +445,33 @@ class game {
                             Os piratas demoraram de mais, o tempo da sala acabou!
                         </p>
                         <img style="max-width: 250px;" src="./../img/splash.gif">
-                        <div><small>Você será enviado para o <a style="color: #a90d5c;cursor:pointer;" title="Ir para o lobby" onclick="ROOM.lobby()">lobby<a> em 10 segundos</small></div>
+                        <div><small>Você será enviado para o <a style="color: #a90d5c;cursor:pointer;" title="Ir para o lobby" onclick="GAME.lobby()">lobby<a> em 10 segundos</small></div>
                     </div>
                 `
             });
 
             // levar o jogador para o lobby
             setTimeout(_=> {
-                this.SESSION.setRoomID(null);
-                window.location.replace('./lobby.html');
+                // this.SESSION.setRoomID(null);
+                // window.location.replace('./lobby.html');
             }, 10000);
         }
     }
 
 
-    // mapSlots() {
-    //     let rects = this.SVG.querySelectorAll('rect');
-    //     let i = 0;
-    //     Array.from(rects).forEach(e => {
-    //         e.id = (new Date().getTime()+i);
-    //         e.onclick = ()=>{this.clickSlot(e.id)}
-    //         this.STATE.slots.push({id: e.id, idroom:this.SESSION.inRoom(), checked: false, color: ''});
-    //         i++;
-    //     });
+    mapSlots(data) {
+        let rects = this.SVG.querySelectorAll('rect');
+        let i = 0;
+        const slots = []
+        Array.from(rects).forEach(e => {
+            e.id = (new Date().getTime()+i);
+            e.onclick = ()=>{this.clickSlot(e.id)}
+            slots.push({id: e.id, idroom:data.room_id, checked: false, color: ''});
+            i++;
+        });
 
-    //     fetch(`./../../api/src/rest/room_slot.php`, {
-    //         method: 'POST',
-    //         body: JSON.stringify({
-    //             method: 'registerAll',
-    //             data: this.STATE.slots
-    //         })
-    //     })
-    //     .then(r=>r.json())
-    //     .then(json => {
-    //         // this.SPLASH_SCREEN.closeSplash();
-    //         if (json.success) {
-    //             // console.log(json);
-    //         }else{
-    //             this.ERROR.showError(json.msg);
-    //         }
-    //     });
-    // }
+        return slots
+    }
 
     // getState () {
 

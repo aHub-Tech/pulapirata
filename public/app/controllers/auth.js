@@ -4,7 +4,7 @@ class auth {
         this.SPLASH_SCREEN = new splashScreen();
         this.SESSION = new session();
 
-        if (this.SESSION.isValid()) return window.location.replace('/lobby');
+        if (this.SESSION.isValid()) return window.location.replace('/game');
     }
 
     register () {
@@ -104,6 +104,6 @@ class auth {
         };
 
         this.SESSION.set(data);
-        window.location.replace('/lobby');
+        window.location.replace('/game');
     }
 }

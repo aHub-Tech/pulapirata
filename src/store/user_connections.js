@@ -45,7 +45,7 @@ const user_connections = {
         room_owner: '',
         room_pass: '',
         room_privated: false,
-        room_status: 0, // 0: ABERTO / 1: CHEIO /  2: GAME 
+        room_status: 0, // 0: ABERTO / 1: CHEIO /  2: INICIADO / 3: FINALIZADO / 4: EXPIRADO
         room_date_time: Date.now(),
         room_time_turn: 0,
         room_turn_player: ''
@@ -57,6 +57,13 @@ const user_connections = {
         user_status: 0, // 0: ONLINE / 1: OFFLINE
         user_socket_id: '',
         room_id: ''
+    },
+    modelSlot: {
+        slot_id: '',
+        room_id: '',
+        slot_checked: false,
+        slot_color: '',
+        slot_shoot: ''
     },
     createUpdateRoom (data) {
         let room = {}
@@ -97,6 +104,30 @@ const user_connections = {
 
         return user
 
+    },
+    createUpdateSlots (data) {
+        // select randomic slot shoot
+        const indexShoot = Math.floor(Math.random()*data.length)
+        data[indexShoot].shoot = true
+
+        data.forEach(e => {
+            let slot = {}
+
+            const index = this.slots.findIndex(s => s.slot_id == e.id && s.room_id)
+
+            if (index===-1) slot = Object.assign({}, this.modelSlot)
+            else slot = this.slots[index]
+
+            slot.slot_id = e.id
+            slot.room_id = e.idroom
+            slot.slot_checked = false
+            slot.slot_color = ''
+            slot.slot_shoot = (e.shoot) ? true : false
+
+            this.slots.push(slot)
+        })
+
+        console.log(this.slots)
     },
     getDataByUserId(user_id) {
         return this.players.find(d => d.user_id === user_id)
@@ -142,7 +173,7 @@ const user_connections = {
         return this.players[i]
     },
     getRoomById (room_id) {
-        return this.rooms.find(e => e.room_id = room_id)
+        return this.rooms.find(e => e.room_id == room_id)
     },
     setRoomId (user_id, room_id) {
         const i = this.players.findIndex(d => d.user_id == user_id)
@@ -189,6 +220,8 @@ const user_connections = {
         let status = 'ABERTA'
         if (room_status===1) status = 'CHEIA'
         if (room_status===2) status = 'EM GAME'
+        if (room_status===3) status = 'FINALIZADO'
+        if (room_status===4) status = 'EXPIRADO'
         return status
     },
     getPublicRoomData (room_id) {
