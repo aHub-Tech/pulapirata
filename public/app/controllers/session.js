@@ -31,6 +31,10 @@ class session {
         return this.DATA.user_id;
     }
 
+    getRoomId () {
+        return this.DATA.room_id
+    }
+
     getJWT () {
         return this.DATA.jwt;
     }

@@ -20,6 +20,13 @@ app.use('/', router_web)
 
 
 io.on('connection', (socket) => {
+
+    // verificando se o socket é conhecido
+    // const user = user_connections.getDataBySocketId(socket.id)
+    // if (!user) {
+    //     socket.emit('who-are-you')
+    // }
+
     // connect lobby
     socket.on('connect-lobby', (data) => {
         // adicionando o socket_id
@@ -73,6 +80,16 @@ io.on('connection', (socket) => {
         user_connections.createUpdateSlots (data)
     })
 
+    // cancel room
+    socket.on('cancel-room', (data) => {
+        try {
+            user_connections.cancelRoom(data)
+            socket.emit('canceled-room')
+        } catch (err) {
+            socket.emit('cancel-room-not-authorized', ({msg: err}))
+        }
+    })
+
     // enter room
     socket.on('enter-room', (data) => {
 
@@ -108,12 +125,7 @@ io.on('connection', (socket) => {
     })
 
     socket.on('disconnect', () => {
-        const user = user_connections.getDataBySocketId(socket.id)
-        // if (user) {
-        //     user.connected = false
-        //     user_connections.updateUser(user)
-        // }
-        user_connections.removeData(socket.id);
+        user_connections.disconnectUser(socket.id);
     });
 });
 

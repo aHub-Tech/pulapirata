@@ -1,3 +1,5 @@
+const e = require("cors")
+
 const user_connections = {
 
     /*
@@ -126,14 +128,12 @@ const user_connections = {
 
             this.slots.push(slot)
         })
-
-        console.log(this.slots)
     },
     getDataByUserId(user_id) {
         return this.players.find(d => d.user_id === user_id)
     },
     getDataBySocketId(socket_id) {
-        return this.players.find(d => d.socket_id === socket_id)
+        return this.players.find(d => d.user_socket_id === socket_id)
     },
     getData() {
         return this.data
@@ -163,9 +163,27 @@ const user_connections = {
     getOuthers(socket_id) {
         return this.players.filter(p => p.user_socket_id !== socket_id)
     },
-    removeData(socket_id) {
-        // this.setData(this.data.filter(d => d.socket_id !== socket_id))
-        return this.getData()
+    disconnectUser(socket_id) {
+        // verificando se o socket é conhecido
+        const user = this.getDataBySocketId(socket_id)
+        if (!user) return false
+
+        // removendo usuário da lista
+        this.players = this.players.filter(e => e.user_id !== user.user_id)
+
+        // verificando se a sala ficou vazia
+        const roomPlayers = this.players.filter(e => e.room_id === user.room_id)
+        if (roomPlayers.length<=0) {
+            // se a sala está vazia removemos a sala
+            this.rooms = this.rooms.filter(e => e.room_id !== user.room_id)
+        }else{
+            this.rooms.map(e => {
+                if (e.room_id === user.room_id) {
+                    e.room_owner = roomPlayers[0].user_id
+                    e.room_owner_name = roomPlayers[0].user_name
+                }
+            })
+        }
     },
     setUserColor (user_id) {
         const i = this.players.findIndex(d => d.user_id == user_id)
@@ -261,6 +279,19 @@ const user_connections = {
         })
 
         return publicData
+    },
+    cancelRoom (data) {
+        const owner = this.rooms.find(r => r.room_owner === data.user_id)
+
+        if (!owner) throw 'Você não tem permissão!'
+
+        this.players.map(e => {
+            if (e.room_id === data.room_id) {
+                e.room_id = 'lobby'
+            }
+        })
+
+        this.rooms = this.rooms.filter(e => e.room_id !== data.room_id)
     }
 
     // getPublicData (user_id) {

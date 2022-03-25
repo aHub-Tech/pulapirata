@@ -55,6 +55,10 @@ class game {
         }else{
             this.inRoom()
         }
+
+        // this.socket.on('who-are-you', () => {
+        //     console.log('o servidor mandou perguntar quem você estranho ?')
+        // })
     }
 
     async inLobby() {
@@ -174,7 +178,7 @@ class game {
             .showSplash(`
                 <p>Aguardando mais piratas no convés...</p>
                     <center>
-                        <button class="btn-red" onclick="GAME.cancelRoom()">Cancelar Sala</button>
+                        <button class="btn-red" onclick="GAME.cancelRoom(${me.room_id})">Cancelar Sala</button>
                 </center>
             `);
         })
@@ -203,6 +207,28 @@ class game {
         // recebendo dados da sala deoutros jogadores
         this.socket.on('data-room', async (data) => {
             this.showPlayers(data.data)
+        })
+    }
+
+    cancelRoom (room_id) {
+        let obj = {};
+        obj.user_id = this.SESSION.getUserId();
+        obj.room_id = this.SESSION.getRoomId();
+
+        // this.MODAL.close();
+        // this.SPLASH_SCREEN.showSplash();
+
+        this.socket.emit('cancel-room', obj)
+
+        // cancelamento de sala não autorizado
+        this.socket.on('cancel-room-not-authorized', (data) => {
+            return this.ERROR.showError(data.msg);
+        })
+
+        // cacelamento confirmado
+        this.socket.on('canceled-room', () => {
+            this.SESSION.setRoomID('lobby')
+            this.render('lobby')
         })
     }
 
@@ -756,30 +782,4 @@ class game {
     //     });
     // }
 
-    // cancelRoom () {
-    //     let obj = {};
-    //     obj.iduser = this.SESSION.getUserId();
-    //     obj.idroom = this.STATE.room.id;
-
-    //     this.MODAL.close();
-    //     this.SPLASH_SCREEN.showSplash();
-
-    //     fetch(`./../../api/src/rest/room.php`, {
-    //         method: 'POST',
-    //         body: JSON.stringify({
-    //             method: 'cancel',
-    //             data: obj
-    //         })
-    //     })
-    //     .then(r=>r.json())
-    //     .then(json => {
-    //         this.SPLASH_SCREEN.closeSplash();
-    //         if (json.success) {
-    //             this.SESSION.setRoomID(null);
-    //             window.location.replace('./lobby.html');
-    //         }else{
-    //             this.ERROR.showError(json.msg);
-    //         }
-    //     });
-    // }
 }

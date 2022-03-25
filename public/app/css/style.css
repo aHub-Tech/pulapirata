@@ -228,8 +228,10 @@ button:hover {
     font-weight: bold;
     display: none;
     box-shadow: 2px 3px #4e4e4e;
-    z-index: 4;
+    z-index: 9999;
     user-select: none;
+    font-size: 12px;
+    letter-spacing: -2px;
 }
 .show{
     display: block !important;
