@@ -164,25 +164,90 @@ const user_connections = {
         return this.players.filter(p => p.user_socket_id !== socket_id)
     },
     disconnectUser(socket_id) {
+        /* Regras para desconexão do jogador
+
+            1. Se for o dono da sala e o status da sala for igual a ABERTO e a sala não estiver vazia
+                - Remove o jogador da sala
+                - Passa para o próximo jogador a liderança
+                - Informa o novo lider
+            2. Se sair um jogador de uma sala em jogo e restarem 2 ou mais jogadores
+                - R
+            3. Se for o jogador da vez e o status da sala for igual a GAME e haver mais de 1 jogador
+                - Remove o jogador da sala
+                - Passa para o próximo a vez de jogar
+                - Informa o próximo a jogar
+        */
+
         // verificando se o socket é conhecido
         const user = this.getDataBySocketId(socket_id)
+        // se for conhecido apenas ignoramos
         if (!user) return false
 
-        // removendo usuário da lista
+        // verificando se o jogador era o dono da sala
+        const owner = this.rooms.find(e => e.room_owner === user.user_id && e.room_id === user.room_id)
+        // verrificando se era o jogador da vez
+        const turn_player = this.rooms.find(e => e.room_turn_player === user.user_id && e.room_id === user.room_id)
+        // pegando a sala
+        const room = this.rooms.find(e => e.room_id === user.room_id)
+
+        // removendo usuário da lista de jogadores na sala
         this.players = this.players.filter(e => e.user_id !== user.user_id)
 
-        // verificando se a sala ficou vazia
+        // pegando os demais jogadores da sala
         const roomPlayers = this.players.filter(e => e.room_id === user.room_id)
-        if (roomPlayers.length<=0) {
-            // se a sala está vazia removemos a sala
+
+        // o jogador de que saiu era o dono da sala e a sala está com mais pessoas
+        // esperando para iniciar a partida, a liderança passa para o próximo jogador
+        if (owner!=undefined && room.room_status===0 && roomPlayers.length>=1) {
+             // seta o proximo jogador da lista como dono
+             const newOwner = roomPlayers[0]
+             room.room_owner = newOwner.user_id
+             room.room_owner_name = newOwner.user_name
+
+             // retorna um aviso
+             return {
+                 msg: `${user.user_name} era o dono da sala e saiu agora ${newOwner.user_name} é o novo dono.`,
+                 players: roomPlayers
+             }
+
+
+        // haviam apenas dois jogadores na sala e outro saiu
+        // então agora o jogador restante se torna o vencedor
+        } else if (room.room_status===2 && roomPlayers.length==1) {
+            // remove a sala
             this.rooms = this.rooms.filter(e => e.room_id !== user.room_id)
-        }else{
-            this.rooms.map(e => {
-                if (e.room_id === user.room_id) {
-                    e.room_owner = roomPlayers[0].user_id
-                    e.room_owner_name = roomPlayers[0].user_name
-                }
+            
+            // remove todos os demais jogadores para o looby
+            roomPlayers.forEach(e => {
+                this.players.forEach(p => {
+                    if (p.user_id === e.user_id) {
+                        p.room_id = 'lobby'
+                    }
+                })
             })
+
+            // retorna um aviso
+            return {
+                msg: `Todos os jogadores desistiram da partida você é o vencedor!.`,
+                players: roomPlayers
+            }
+
+        // Haviam 3 ou mais jogadores e a sala estava em jogo
+        // o jogador da vez saiu da partida, então a vez é passada para o próximo jogador
+        } else if (turn_player!=undefined && room.room_status===2 && roomPlayers.length>=2) {
+            // passando a vez de jogar para o próximo jogador da lista
+            room.room_turn_player = roomPlayers[0].user_id
+
+            // retorna um aviso
+            return {
+                msg: `${user.user_name} saiu da partida e agora ${roomPlayers[0].user_name} é quem joga`,
+                players: roomPlayers
+            }
+        }else{
+            // remove a sala
+            this.rooms = this.rooms.filter(e => e.room_id !== user.room_id)
+
+            return false
         }
     },
     setUserColor (user_id) {

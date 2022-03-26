@@ -125,7 +125,11 @@ io.on('connection', (socket) => {
     })
 
     socket.on('disconnect', () => {
-        user_connections.disconnectUser(socket.id);
+        const result = user_connections.disconnectUser(socket.id);
+        if (result) {
+            console.log(result)
+        }
+
     });
 });
 
