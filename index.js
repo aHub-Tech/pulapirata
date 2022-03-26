@@ -127,7 +127,11 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         const result = user_connections.disconnectUser(socket.id);
         if (result) {
-            console.log(result)
+            result.players.forEach(e => {
+                socket.to(e.user_socket_id).emit(result.signal, {
+                    msg: result.msg
+                })
+            });
         }
 
     });

@@ -204,9 +204,14 @@ class game {
             // window.location.replace('/lobby')
         })
         
-        // recebendo dados da sala deoutros jogadores
+        // recebendo dados da sala deo utros jogadores
         this.socket.on('data-room', async (data) => {
             this.showPlayers(data.data)
+        })
+
+        // tornando novo dono da sala por desistência
+        this.socket.on('room_new_owner', async (data) => {
+            console.log(data)
         })
     }
 

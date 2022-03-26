@@ -203,10 +203,11 @@ const user_connections = {
              const newOwner = roomPlayers[0]
              room.room_owner = newOwner.user_id
              room.room_owner_name = newOwner.user_name
-
+             
              // retorna um aviso
              return {
                  msg: `${user.user_name} era o dono da sala e saiu agora ${newOwner.user_name} é o novo dono.`,
+                 signal: 'room_new_owner',
                  players: roomPlayers
              }
 
@@ -229,6 +230,7 @@ const user_connections = {
             // retorna um aviso
             return {
                 msg: `Todos os jogadores desistiram da partida você é o vencedor!.`,
+                signal: 'room_winner_wo',
                 players: roomPlayers
             }
 
@@ -241,6 +243,7 @@ const user_connections = {
             // retorna um aviso
             return {
                 msg: `${user.user_name} saiu da partida e agora ${roomPlayers[0].user_name} é quem joga`,
+                signal: 'room_new_turn_player',
                 players: roomPlayers
             }
         }else{
