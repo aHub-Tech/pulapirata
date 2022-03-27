@@ -129,7 +129,9 @@ io.on('connection', (socket) => {
         if (result) {
             result.players.forEach(e => {
                 socket.to(e.user_socket_id).emit(result.signal, {
-                    msg: result.msg
+                    player_id: result.player_id,
+                    msg: result.msg,
+                    data: result.data
                 })
             });
         }

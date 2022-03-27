@@ -203,11 +203,14 @@ const user_connections = {
              const newOwner = roomPlayers[0]
              room.room_owner = newOwner.user_id
              room.room_owner_name = newOwner.user_name
+             room.turn_player = newOwner.user_id
              
              // retorna um aviso
              return {
                  msg: `${user.user_name} era o dono da sala e saiu agora ${newOwner.user_name} é o novo dono.`,
                  signal: 'room_new_owner',
+                 player_id: newOwner.user_id,
+                 data: this.getPublicRoomData(room.room_id),
                  players: roomPlayers
              }
 
@@ -244,6 +247,7 @@ const user_connections = {
             return {
                 msg: `${user.user_name} saiu da partida e agora ${roomPlayers[0].user_name} é quem joga`,
                 signal: 'room_new_turn_player',
+                player_id: roomPlayers[0].user_id,
                 players: roomPlayers
             }
         }else{

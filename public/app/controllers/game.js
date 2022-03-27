@@ -211,7 +211,8 @@ class game {
 
         // tornando novo dono da sala por desistência
         this.socket.on('room_new_owner', async (data) => {
-            console.log(data)
+            this.showPlayers(data.data)
+            this.ERROR.showError(data.msg)
         })
     }
 
@@ -315,10 +316,6 @@ class game {
             await this.render('room')
             
             this.showPlayers(data.data)
-
-            this
-            .SPLASH_SCREEN
-            .showSplash(`<p>Aguardando mais piratas no convés...</p>`);
         })
     }
 
@@ -362,11 +359,12 @@ class game {
 
     ready (data) {
 
+
+        console.log(data)
         if (data.room_status === 0 && data.room_players.length>1)  {
             console.log('status 0: aberto')
 
             // verificando se o jogador é o dono da sala
-            console.log(data)
             if (this.SESSION.getUserId() === data.room_owner) {
                 this.SPLASH_SCREEN.closeSplash();
 
@@ -381,6 +379,7 @@ class game {
                     `
                 });
             }else{
+                console.log('nao é o dono')
                 this.SPLASH_SCREEN.showSplash('Aguardando o capitão iniciar a partida...');
             }
         }
