@@ -364,6 +364,15 @@ const user_connections = {
         })
 
         this.rooms = this.rooms.filter(e => e.room_id !== data.room_id)
+    },
+    startGame (data) {
+        const owner = this.rooms.find(r => r.room_owner === data.user_id)
+        if (!owner) throw 'Você não tem permissão!'
+
+        const room = this.rooms.find(e => e.room_id === owner.room_id)
+        room.room_status = 2 // em game
+
+        return this.players.filter(e => e.room_id === owner.room_id)
     }
 
     // getPublicData (user_id) {

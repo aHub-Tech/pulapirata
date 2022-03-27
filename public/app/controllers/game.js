@@ -324,6 +324,8 @@ class game {
 
     showPlayers (data) {
 
+        console.log(data)
+
         if (data.room_players.length>=1) {
             let inRoom = false;
             let li = '';
@@ -359,8 +361,6 @@ class game {
 
     ready (data) {
 
-
-        console.log(data)
         if (data.room_status === 0 && data.room_players.length>1)  {
             console.log('status 0: aberto')
 
@@ -375,7 +375,7 @@ class game {
                         <small>Você já pode iniciar o jogo ou aguardar mais jogadores</small>
                     `,
                     content: `
-                        <button onclick="ROOM.start()">Iniciar Jogo</button>
+                        <button onclick="GAME.start()">Iniciar Jogo</button>
                     `
                 });
             }else{
@@ -503,6 +503,18 @@ class game {
         return slots
     }
 
+    start () {
+        let obj = {};
+        obj.user_id = this.SESSION.getUserId();
+        
+        console.log('aqui');
+        
+        this.socket.emit('start-game' , obj)
+        this.socket.on('start-game-confirmed', (data) => {
+            this.showPlayers(data.data)
+        })
+    }
+    
     // getState () {
 
     //     fetch (`./../../api/src/rest/room.php?method=getState&idroom=${this.SESSION.inRoom()}`, {
@@ -583,205 +595,6 @@ class game {
     //                     this.ERROR.showError(json.msg);
     //                 }
     //             });
-    //         }
-    //     });
-    // }
-
-    // showPlayers () {
-    //     if (this.STATE.players.length>0) {
-    //         let inRoom = false;
-    //         let li = '';
-    //         let ul = this.PLAYERS.querySelector('ul');
-    //         let move = this.PLAYERS.querySelector('span');
-
-    //         this.STATE.players.forEach(e => {
-    //             li += `
-    //             <li>
-    //                 <div class="player">
-    //                     <div class="avatar" style="border: 5px solid #${e.color};">
-    //                         <!-- 
-    //                             <img src="https://store.playstation.com/store/api/chihiro/00_09_000/container/GB/en/19/EP4312-NPEB00474_00-AVSMOBILET000288/image?w=320&h=320&bg_color=000000&opacity=100&_version=00_09_000">
-    //                         -->
-    //                     </div>
-    //                     <div class="name"> ${e.user_name.split(' ')[0]} </div>
-    //                 </div>
-    //             </li>
-    //             `;
-
-    //             // comparando o jogador logado com a lista
-    //             if (e.iduser === this.SESSION.getUserId()) {
-    //                 this.SESSION.setColor(e.color); // getando a cor
-    //                 inRoom = true; // presente na room
-    //             }
-    //             // verificando jogador da vez
-    //             if (parseInt(e.move)) {
-    //                 move.innerHTML = `${e.user_name.split(' ')[0]}`;
-    //             }
-    //         });
-
-    //         // se o jogador não estiver presente entre os jogadores da sala
-    //         if (!inRoom) {
-    //             this.SESSION.setRoomID(null);
-    //             return window.location.replace('./lobby.html');
-    //         }
-
-    //         ul.innerHTML = li;
-
-    //         // chamar função para tela de iniciar jogo, se status = REGISTER
-    //         this.ready();
-    //     }
-    // }
-
-    // ready () {
-
-    //     if (this.STATE.room.status === 'REGISTER' && this.STATE.players.length>1)  {
-
-    //         // verificando se o jogador é o dono da sala
-    //         if (this.SESSION.getUserId() === this.STATE.room.owner) {
-    //             this.SPLASH_SCREEN.closeSplash();
-
-    //             this.MODAL.close();
-    //             this.MODAL.show({
-    //                 header:`
-    //                     <h3>PRONTO PARA INICIAR O JOGO</h3>
-    //                     <small>Você já pode iniciar o jogo ou aguardar mais jogadores</small>
-    //                 `,
-    //                 content: `
-    //                     <button onclick="ROOM.start()">Iniciar Jogo</button>
-    //                 `
-    //             });
-    //         }else{
-    //             this.SPLASH_SCREEN.showSplash('Aguardando o capitão iniciar a partida...');
-    //         }
-    //     }
-    //     if (this.STATE.room.status === 'INPROGRESS' && this.LOCALSTATUS !== this.STATE.room.status) {
-    //         this.SPLASH_SCREEN.closeSplash();
-    //         this.LOCALSTATUS = this.STATE.room.status;
-    //     } 
-    //     if (this.STATE.room.status === 'FINISH' && this.LOCALSTATUS !== this.STATE.room.status) {
-    //         this.SPLASH_SCREEN.closeSplash();
-    //         this.LOCALSTATUS = this.STATE.room.status;
-            
-
-    //         let player = this.STATE.players.filter(e => parseInt(e.move))[0];
-            
-    //         let td = ``;
-    //         this.STATE.players.map(e => {
-    //             td += `
-    //                 <tr>
-    //                     <td>${e.user_name}</td>
-    //                     <td>${e.points}</td>
-    //                 </tr>
-    //             `;
-    //         });
-
-    //         // adicionando animação de salto do pirata
-    //         document.querySelector('.game img').classList.remove('pirateAnimation');
-    //         document.querySelector('.game img').classList.add('jumpAnimationTop');
-
-    //         setTimeout(_=> {
-    //             this.MODAL.close();
-    //             this.MODAL.show({
-    //                 header:`
-    //                     <h3>OPA!!! PULA PIRATA!!!</h3>
-    //                 `,
-    //                 content: `
-    //                     <div class="finish">
-    //                         <p>
-    //                             <span>${player.user_name.split(' ')[0]}</span>
-    //                             FEZ O PIRATA PULAR!!!
-    //                         </p>
-    //                         <div>
-    //                             <table>
-    //                                 <thead>
-    //                                     <tr>
-    //                                         <td>User</td>
-    //                                         <td>Points</td>
-    //                                     </tr>
-    //                                 </thead>
-    //                                 <tbody>
-    //                                     ${td}
-    //                                 </tbody>
-    //                             </table>
-    //                         </div>
-    //                         <div><small>Você será enviado para o <a style="color: #a90d5c;cursor:pointer;" title="Ir para o lobby" onclick="ROOM.lobby()">lobby<a> em 10 segundos</small></div>
-    //                     </div>
-    //                 `
-    //             });
-    //         }, 3000);
-
-    //         // levar o jogador para o lobby
-    //         setTimeout(_=> {
-    //             this.SESSION.setRoomID(null);
-    //             window.location.replace('./lobby.html');
-    //         }, 10000);
-    //     }
-    //     if (this.STATE.room.status === 'EXPIRED' && this.LOCALSTATUS !== this.STATE.room.status) {
-    //         this.SPLASH_SCREEN.closeSplash();
-    //         this.LOCALSTATUS = this.STATE.room.status;
-            
-
-    //         let td = ``;
-    //         this.STATE.players.map(e => {
-    //             td += `
-    //                 <tr>
-    //                     <td>${e.user_name}</td>
-    //                     <td>${e.points}</td>
-    //                 </tr>
-    //             `;
-    //         });
-
-    //         this.MODAL.close();
-    //         this.MODAL.show({
-    //             header:`
-    //                 <h3>O TEMPO DA SALA EXPIROU!</h3>
-    //             `,
-    //             content: `
-    //                 <div class="finish">
-    //                     <p>
-    //                         Os piratas demoraram de mais, o tempo da sala acabou!
-    //                     </p>
-    //                     <img style="max-width: 250px;" src="./../img/splash.gif">
-    //                     <div><small>Você será enviado para o <a style="color: #a90d5c;cursor:pointer;" title="Ir para o lobby" onclick="ROOM.lobby()">lobby<a> em 10 segundos</small></div>
-    //                 </div>
-    //             `
-    //         });
-
-    //         // levar o jogador para o lobby
-    //         setTimeout(_=> {
-    //             this.SESSION.setRoomID(null);
-    //             window.location.replace('./lobby.html');
-    //         }, 10000);
-    //     }
-    // }
-
-    // lobby () {
-    //     this.SESSION.setRoomID(null);
-    //     window.location.replace('./lobby.html');
-    // }
-
-    // start () {
-    //     let obj = {};
-    //     obj.iduser = this.SESSION.getUserId();
-    //     obj.idroom = this.STATE.room.id;
-
-    //     this.MODAL.close();
-    //     this.SPLASH_SCREEN.showSplash();
-
-    //     fetch(`./../../api/src/rest/room.php`, {
-    //         method: 'POST',
-    //         body: JSON.stringify({
-    //             method: 'start',
-    //             data: obj
-    //         })
-    //     })
-    //     .then(r=>r.json())
-    //     .then(json => {
-    //         this.SPLASH_SCREEN.closeSplash();
-    //         if (json.success) {
-    //             // console.log(json);
-    //         }else{
-    //             this.ERROR.showError(json.msg);
     //         }
     //     });
     // }

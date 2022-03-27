@@ -124,6 +124,31 @@ io.on('connection', (socket) => {
         if (!user) socket.emit('not-connect')
     })
 
+    socket.on('start-game', (data) => {
+        try {
+            const roomPlayers = user_connections.startGame(data)
+
+            roomPlayers.forEach(e => {
+                // emitindo para o jogador que startou a sala
+                if (e.user_id === data.user_id) {
+                    socket.emit('start-game-confirmed', {'data': user_connections.getPublicRoomData (e.room_id)})
+                // emitindo para os demais jogadores da sala
+                }else{
+                    socket.to(e.user_socket_id).emit('data-room', {'data': user_connections.getPublicRoomData (e.room_id)})
+                }
+            })
+
+            // emitindo para jogadores no lobby
+            this.players.forEach(e => {
+                if (e.room_id === 'lobby') {
+                    socket.to(e.user_socket_id).emit('data', {'data': user_connections.getPublicData()})
+                }
+            })
+        } catch (error) {
+            socket.emit('start-room-not-authorized', {msg: error})
+        }
+    })
+
     socket.on('disconnect', () => {
         const result = user_connections.disconnectUser(socket.id);
         if (result) {
