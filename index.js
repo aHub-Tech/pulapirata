@@ -149,6 +149,20 @@ io.on('connection', (socket) => {
         }
     })
 
+    socket.on('show-my-position-cursor', (data) => {
+        const user = user_connections.getDataByUserId(data.user_id)
+        user_connections.getRoomPlayers(user.room_id).forEach(e => {
+            if (e.user_id !== data.user_id) {
+                socket.to(e.user_socket_id).emit('show-outher-cursor-position', {
+                    'user_id': user.user_id,
+                    'user_name': user.user_name,
+                    'user_color': user.user_color,
+                    'cursor': data.cursor
+                })
+            }
+        })
+    })
+
     socket.on('disconnect', () => {
         const result = user_connections.disconnectUser(socket.id);
         if (result) {

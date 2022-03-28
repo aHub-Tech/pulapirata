@@ -387,6 +387,7 @@ class game {
             console.log('status 2: game')
             this.MODAL.close()
             this.SPLASH_SCREEN.closeSplash()
+            this.getPositionMouse ()
             // this.LOCALSTATUS = this.STATE.room.status;
         } 
         if (data.room_status === 3) {
@@ -513,6 +514,58 @@ class game {
         this.socket.emit('start-game' , obj)
         this.socket.on('start-game-confirmed', (data) => {
             this.showPlayers(data.data)
+        })
+    }
+
+    getPositionMouse () {
+        document.onmousemove = (e) => {
+            this.socket.emit('show-my-position-cursor', ({
+                user_id: this.SESSION.getUserId(),
+                cursor: {
+                    x: e.x, 
+                    y: e.y
+                }
+            }))
+        }
+
+        this.socket.on('show-outher-cursor-position', (data) => {
+            const body = document.body;
+            const cursor = document.getElementById(`${data.user_id}`) || document.createElement('div')
+            cursor.innerHTML = ''
+
+            const icon = document.createElement('i')
+            icon.classList.add(`fa`)
+            icon.classList.add(`fa-hand-pointer`)
+            icon.style = `color: #${data.user_color};`
+
+            cursor.appendChild(icon)
+
+            const label = document.createElement('label')
+            label.style = `
+                font-size: 8px;
+                padding: 5px;
+            `
+            label.innerHTML = data.user_name
+
+            cursor.appendChild(label)
+
+            cursor.style = `
+                width: 120px;
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: ${data.cursor.y}px;
+                left: ${window.screen.width-data.cursor.x-(cursor.clientWidth/2)}px;
+                z-index: 1;
+                align-items: center;
+
+            `
+
+            console.log(window.screen.width)
+
+            cursor.id = data.user_id
+            
+            body.appendChild(cursor)
         })
     }
     

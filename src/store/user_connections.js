@@ -190,8 +190,13 @@ const user_connections = {
         // pegando a sala
         const room = this.rooms.find(e => e.room_id === user.room_id)
 
+
         // removendo usuário da lista de jogadores na sala
         this.players = this.players.filter(e => e.user_id !== user.user_id)
+
+
+        if (!room) return false
+
 
         // pegando os demais jogadores da sala
         const roomPlayers = this.players.filter(e => e.room_id === user.room_id)
