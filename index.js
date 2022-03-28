@@ -62,8 +62,8 @@ io.on('connection', (socket) => {
 
         user_connections.createUpdateRoom(data)
         
-        user_connections.setUserColor(data.user_id)
         user_connections.setRoomId(data.user_id, room_id)
+        user_connections.setUserColor(data.user_id)
 
         socket.emit('create-room-confirmed', {
             data: user_connections.getPublicRoomData(room_id)
@@ -100,9 +100,9 @@ io.on('connection', (socket) => {
             return socket.emit('not-authorized-room')
         }
 
-        user_connections.setUserColor(data.user_id)
         user_connections.setRoomId(data.user_id, data.room_id)
-
+        user_connections.setUserColor(data.user_id)
+        
         socket.emit('enter-room-confirmed', {
             data: user_connections.getPublicRoomData(data.room_id)
         })

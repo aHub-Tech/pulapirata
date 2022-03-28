@@ -258,9 +258,17 @@ const user_connections = {
         }
     },
     setUserColor (user_id) {
-        const i = this.players.findIndex(d => d.user_id == user_id)
-        this.players[i].user_color = this.colors.find(c => this.players.find(u => u.user_color!=c && u.room_id==this.players[i].room_id))
-        return this.players[i]
+        const player = this.players.find(d => d.user_id == user_id)
+        const color = this.colors.find(c => {
+            let x = false
+            this.getRoomPlayers(player.room_id).find(e => {
+                if (c==e.user_color) x = true
+            })
+            if (!x) return c
+        })
+            
+        player.user_color = color || this.colors[0]
+        return player
     },
     getRoomById (room_id) {
         return this.rooms.find(e => e.room_id == room_id)

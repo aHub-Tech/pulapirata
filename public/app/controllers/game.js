@@ -385,7 +385,8 @@ class game {
         }
         if (data.room_status === 2) {
             console.log('status 2: game')
-            this.SPLASH_SCREEN.closeSplash();
+            this.MODAL.close()
+            this.SPLASH_SCREEN.closeSplash()
             // this.LOCALSTATUS = this.STATE.room.status;
         } 
         if (data.room_status === 3) {
