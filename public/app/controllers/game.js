@@ -519,10 +519,13 @@ class game {
 
     getPositionMouse () {
         document.onmousemove = (e) => {
+
+            console.log(e)
+
             this.socket.emit('show-my-position-cursor', ({
                 user_id: this.SESSION.getUserId(),
                 cursor: {
-                    x: e.x, 
+                    x: e.x/window.innerWidth, 
                     y: e.y
                 }
             }))
@@ -554,14 +557,14 @@ class game {
                 display: flex;
                 flex-direction: column;
                 position: absolute;
+                left: ${(data.cursor.x*window.innerWidth)}px;
                 top: ${data.cursor.y}px;
-                left: ${window.screen.width-data.cursor.x-(cursor.clientWidth/2)}px;
                 z-index: 1;
                 align-items: center;
 
             `
 
-            console.log(window.screen.width)
+            console.log(data)
 
             cursor.id = data.user_id
             
