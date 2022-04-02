@@ -207,6 +207,7 @@ class game {
         // recebendo dados da sala deo utros jogadores
         this.socket.on('data-room', async (data) => {
             this.showPlayers(data.data)
+            this.setSlots(data.data)
         })
 
         // tornando novo dono da sala por desistência
@@ -316,6 +317,7 @@ class game {
             await this.render('room')
             
             this.showPlayers(data.data)
+            this.setSlots(data.data)
         })
     }
 
@@ -505,6 +507,24 @@ class game {
         return slots
     }
 
+    setSlots (data) {
+        // if (data.slots.length>0) {
+            let rects = this.SVG.querySelectorAll('rect');
+            
+            let i = 0;
+            Array.from(rects).forEach(e => {
+                e.id = data.room_slots[i].slot_id;
+                e.onclick = ()=>{this.clickSlot(e.id)}
+                if (data.room_slots[i].slot_checked) {
+                    e.style.fill = '#'+data.room_slots[i].slot_color;
+                }
+                i++;
+            });
+        // }else{
+        //     this.mapSlots();
+        // }
+    }
+
     start () {
         let obj = {};
         obj.user_id = this.SESSION.getUserId();
@@ -519,8 +539,6 @@ class game {
 
     getPositionMouse () {
         document.onmousemove = (e) => {
-
-            console.log(e)
 
             this.socket.emit('show-my-position-cursor', ({
                 user_id: this.SESSION.getUserId(),
@@ -564,11 +582,21 @@ class game {
 
             `
 
-            console.log(data)
-
             cursor.id = data.user_id
             
             body.appendChild(cursor)
+        })
+    }
+
+    clickSlot (slot_id) {
+
+        this.socket.emit('click-on-slot', {
+            user_id: this.SESSION.getUserId(),
+            slot_id: slot_id
+        })
+
+        this.socket.on('click-on-slot-error', (data) => {
+            this.ERROR.showError(data.error)
         })
     }
     
@@ -600,60 +628,8 @@ class game {
     //     });
     // }
 
-    // setSlots () {
-    //     if (this.STATE.slots.length>0) {
-    //         let rects = this.SVG.querySelectorAll('rect');
-            
-    //         let i = 0;
-    //         Array.from(rects).forEach(e => {
-    //             e.id = this.STATE.slots[i].id;
-    //             e.onclick = ()=>{this.clickSlot(e.id)}
-    //             if (parseInt(this.STATE.slots[i].checked)) {
-    //                 e.style.fill = '#'+this.STATE.slots[i].color;
-    //             }
-    //             i++;
-    //         });
-    //     }else{
-    //         this.mapSlots();
-    //     }
-    // }
+    
 
-    // clickSlot (id) {
-    //     this.STATE.slots.map(e => {
-    //         if (e.id === id) {
-                
-    //             if (parseInt(e.checked)) return this.ERROR.showError("Este slot já foi marcado!");
-    //             if (this.STATE.room.status !== 'INPROGRESS') return false;
-
-    //             let obj = {};
-    //             obj.id = e.id;
-    //             obj.idroom = this.SESSION.inRoom();
-    //             obj.iduser = this.SESSION.getUserId();
-    //             obj.color = this.SESSION.getColor();
-    //             obj.checked = true;
-
-    //             this.SPLASH_SCREEN.showSplash();
-
-    //             fetch(`./../../api/src/rest/room.php`, {
-    //                 method: 'POST',
-    //                 body: JSON.stringify({
-    //                     method: 'check',
-    //                     data: obj
-    //                 })
-    //             })
-    //             .then(r=>r.json())
-    //             .then(json => {
-    //                 this.SPLASH_SCREEN.closeSplash();
-
-    //                 if (json.success) {
-    //                     this.SVG.getElementById(e.id).style.fill = '#'+this.SESSION.getColor();
-    //                     this.getState();
-    //                 }else{
-    //                     this.ERROR.showError(json.msg);
-    //                 }
-    //             });
-    //         }
-    //     });
-    // }
+    
 
 }

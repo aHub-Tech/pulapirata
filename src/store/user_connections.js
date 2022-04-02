@@ -327,6 +327,22 @@ const user_connections = {
         if (room_status===4) status = 'EXPIRADO'
         return status
     },
+    getSlotsPublicData(room_id) {
+        const slots = this.slots.filter(e => e.room_id === room_id)
+        const publicData = []
+
+        slots.forEach(e => {
+            const slot = {
+                slot_id: e.slot_id,
+                slot_checked: e.slot_checked,
+                slot_color: e.slot_color
+            }
+
+            publicData.push(slot)
+        })
+
+        return publicData
+    },
     getPublicRoomData (room_id) {
         const room = this.rooms.find(r => r.room_id === room_id)
 
@@ -338,6 +354,7 @@ const user_connections = {
             room_status: room.room_status,
             room_status_description: this.getStatusRoom(room.room_status),
             room_players: this.players.filter(p => p.room_id === room.room_id),
+            room_slots: this.getSlotsPublicData(room_id),
             room_turn_player: room.room_turn_player
         }
 
@@ -386,6 +403,37 @@ const user_connections = {
         room.room_status = 2 // em game
 
         return this.players.filter(e => e.room_id === owner.room_id)
+    },
+    clickOnSlot (data) {
+
+        const user = this.getDataByUserId(data.user_id)
+        if (!user) throw 'Você não tem permissão!'
+
+        const slot = this.slots.find(e => e.slot_id === data.slot_id)
+        if (!slot) throw 'Houve um erro o slot não foi encontrado!'
+
+        const room = this.rooms.find(e => e.room_turn_player === user.user_id && e.room_id === user.room_id)
+        if (!room) throw 'Não é sua vez de jogar!'
+
+        if (slot.slot_checked) throw 'Este slot já marcado!'
+
+        const players = user_connections.getRoomPlayers(user.room_id)
+
+        slot.slot_color = user.user_color
+        slot.slot_checked = true
+
+        if (slot.slot_shoot) {
+            room.room_status = 3
+            room.room_status_description = this.getStatusRoom(room.room_status)
+        }else{
+            const index = players.findIndex(e => e.user_id = user.user_id)
+            const next_player = (players[index+1]) ? players[index+1] : players[0]
+            console.log(next_player);
+            room.room_turn_player = next_player.user_id
+        }
+
+        return players
+
     }
 
     // getPublicData (user_id) {

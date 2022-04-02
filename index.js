@@ -151,6 +151,8 @@ io.on('connection', (socket) => {
 
     socket.on('show-my-position-cursor', (data) => {
         const user = user_connections.getDataByUserId(data.user_id)
+        if (!user) return false
+
         user_connections.getRoomPlayers(user.room_id).forEach(e => {
             if (e.user_id !== data.user_id) {
                 socket.to(e.user_socket_id).emit('show-outher-cursor-position', {
@@ -161,6 +163,23 @@ io.on('connection', (socket) => {
                 })
             }
         })
+    })
+
+    socket.on('click-on-slot', (data) => {
+        try {
+            const players = user_connections.clickOnSlot(data)
+
+            socket.emit('data-room', {'data': user_connections.getPublicRoomData(players[0].room_id)})
+            
+            players.forEach(e => {
+                if (e.user_id !== data.user_id) {
+                    socket.to(e.user_socket_id).emit('data-room', {'data': user_connections.getPublicRoomData(players[0].room_id)})
+                }
+            })
+
+        }catch(e) {
+            socket.emit('click-on-slot-error', {error: e})
+        }
     })
 
     socket.on('disconnect', () => {
