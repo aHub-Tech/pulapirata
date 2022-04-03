@@ -31,6 +31,9 @@ io.on('connection', (socket) => {
     socket.on('connect-lobby', (data) => {
         // adicionando o socket_id
         data.user_socket_id = socket.id;
+
+        // remove da sala se estiver
+        user_connections.disconnectUser(socket.id)
         
         const room = user_connections.createUpdateRoom(data)
         const user = user_connections.createUpdateUser(data)
@@ -183,7 +186,8 @@ io.on('connection', (socket) => {
     })
 
     socket.on('disconnect', () => {
-        const result = user_connections.disconnectUser(socket.id);
+        const result = user_connections.disconnectUser(socket.id)
+
         if (result) {
             result.players.forEach(e => {
                 socket.to(e.user_socket_id).emit(result.signal, {

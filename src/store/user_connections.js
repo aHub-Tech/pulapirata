@@ -197,7 +197,6 @@ const user_connections = {
 
         if (!room) return false
 
-
         // pegando os demais jogadores da sala
         const roomPlayers = this.players.filter(e => e.room_id === user.room_id)
 
@@ -219,7 +218,16 @@ const user_connections = {
                  players: roomPlayers
              }
 
-
+        // quando sair um jogador e o jogo ainda não estiver iniciado e ele não for o dono
+        } else if (!owner && room.room_status===0) {
+                // retorna um aviso
+                return {
+                    msg: ``,
+                    signal: 'data-room',
+                    player_id: '',
+                    data: this.getPublicRoomData(room.room_id),
+                    players: roomPlayers
+                }
         // haviam apenas dois jogadores na sala e outro saiu
         // então agora o jogador restante se torna o vencedor
         } else if (room.room_status===2 && roomPlayers.length==1) {
@@ -260,6 +268,7 @@ const user_connections = {
             this.rooms = this.rooms.filter(e => e.room_id !== user.room_id)
 
             return false
+
         }
     },
     setUserColor (user_id) {
@@ -345,7 +354,7 @@ const user_connections = {
     },
     getPublicRoomData (room_id) {
         const room = this.rooms.find(r => r.room_id === room_id)
-
+        
         const publicData = {
             room_id: room.room_id,
             room_owner: room.room_owner,
@@ -426,9 +435,8 @@ const user_connections = {
             room.room_status = 3
             room.room_status_description = this.getStatusRoom(room.room_status)
         }else{
-            const index = players.findIndex(e => e.user_id = user.user_id)
-            const next_player = (players[index+1]) ? players[index+1] : players[0]
-            console.log(next_player);
+            const index = players.findIndex(e => e.user_id === user.user_id)
+            const next_player = (players[index+1]==undefined) ? players[0] : players[index+1]
             room.room_turn_player = next_player.user_id
         }
 

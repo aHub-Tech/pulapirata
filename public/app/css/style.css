@@ -216,7 +216,7 @@ button:hover {
 
 .error {
     position: absolute;
-    top: 5px;
+    top: 50px;
     left: 5px;
     padding: 10px;
     border: 1px solid #772222;

@@ -12,18 +12,6 @@ class game {
         this.RENDER = document.querySelector('div.render')
         this.ROOMS = {}
 
-        // this.PLAYERS = document.querySelector('div.players')
-        // this.SVG = document.querySelector('svg');
-        // this.LOCALSTATUS = '';
-        
-        // this.SLOTS = [];
-        // this.STATE = {
-        //     room: null,
-        //     slots: [],
-        //     players: []
-        // };
-
-
         // verificando se o usuário possui uma sessão
         if (!this.SESSION.isValid()) {
             return window.location.replace('/login')
@@ -32,6 +20,34 @@ class game {
         // verificando se está em uma sala ou no lobby
         const page = this.SESSION.inRoom() ? 'room' : 'lobby'
         this.render(page);
+
+        this.welcome()
+    }
+
+    welcome() {
+        this.MODAL.show({
+            header:`
+                <h3>Bem Vindo a Taverna!</h3>
+                <small>O encontro dos piratas é aqui, aproveita a estadia!</small>
+            `,
+            content: `
+            <img src="https://i.pinimg.com/originals/1c/32/fa/1c32fa28d4375db1cd0c4cbd40c8e156.gif">
+            <div class="inline">
+                <button onclick="GAME.confirmWelcome()">Entendi</button>
+            </div>`
+        });
+    }
+
+    playSound (sound, volume) {
+        const audio = new Audio()
+        audio.src = `./../app/audio/${sound}.mp3`
+        audio.volume = parseFloat('0.'+volume)
+        audio.play()
+    }
+
+    confirmWelcome() {
+        // this.playSound('pirate_music', 2)
+        this.MODAL.close()
     }
 
     async render (page) {
@@ -46,7 +62,7 @@ class game {
 
         // alimentando a header
         this.HEADER.show({
-            room: `#${(this.SESSION.inRoom() ? this.SESSION.inRoom() : 'LOBBY')}`,
+            room: `#${(this.SESSION.inRoom() ? this.SESSION.inRoom() : 'TAVERNA')}`,
             user: (this.SESSION.getName().split(' ')[0])
         });
 
@@ -172,15 +188,6 @@ class game {
             this.socket.emit('map-slots', this.mapSlots(data.data))
 
             this.showPlayers (data.data)
-
-            this
-            .SPLASH_SCREEN
-            .showSplash(`
-                <p>Aguardando mais piratas no convés...</p>
-                    <center>
-                        <button class="btn-red" onclick="GAME.cancelRoom(${me.room_id})">Cancelar Sala</button>
-                </center>
-            `);
         })
     }
 
@@ -326,8 +333,6 @@ class game {
 
     showPlayers (data) {
 
-        console.log(data)
-
         if (data.room_players.length>=1) {
             let inRoom = false;
             let li = '';
@@ -361,6 +366,26 @@ class game {
         }
     }
 
+    showMyTurn () {
+        this.MODAL.show({
+            header:`
+                <h3>Sua vez de jogar!</h3>
+                <small>Vamos lá, pense bem qual slot marcar para não perder o jogo!</small>
+            `,
+            content: `
+            <img style="max-width:400px;" src="https://cdn.dribbble.com/users/2844289/screenshots/7721137/pirate_run-cycle_dribbble_00096.gif">
+            <div class="inline">
+                <button onclick="GAME.confirmMyTurn()">Ok</button>
+            </div>`
+        });
+
+        this.playSound('my_turn', 1)
+    }
+
+    confirmMyTurn() {
+        this.MODAL.close()
+    }
+
     ready (data) {
 
         if (data.room_status === 0 && data.room_players.length>1)  {
@@ -384,21 +409,37 @@ class game {
                 console.log('nao é o dono')
                 this.SPLASH_SCREEN.showSplash('Aguardando o capitão iniciar a partida...');
             }
+        }else{
+            this.MODAL.close()
+            this
+            .SPLASH_SCREEN
+            .showSplash(`
+                <p>Aguardando mais piratas no convés...</p>
+                    <center>
+                        <button class="btn-red" onclick="GAME.cancelRoom(${data.room_id})">Cancelar Sala</button>
+                </center>
+            `);
         }
         if (data.room_status === 2) {
             console.log('status 2: game')
             this.MODAL.close()
             this.SPLASH_SCREEN.closeSplash()
             this.getPositionMouse ()
-            // this.LOCALSTATUS = this.STATE.room.status;
+            
+            if (data.room_turn_player===this.SESSION.getUserId()) this.showMyTurn()
         } 
         if (data.room_status === 3) {
             console.log('status 3: finalizado')
             this.SPLASH_SCREEN.closeSplash();
             // this.LOCALSTATUS = this.STATE.room.status;
             
-
             let player = data.room_players.find(p => p.user_id === data.room_turn_player);
+
+            if (player.user_id === this.SESSION.getUserId()) {
+                this.playSound('game_over', 1)
+            }else{
+                this.playSound('winner', 1)
+            }
             
             let td = ``;
             data.room_players.map(p => {
@@ -439,17 +480,11 @@ class game {
                                     </tbody>
                                 </table>
                             </div>
-                            <div><small>Você será enviado para o <a style="color: #a90d5c;cursor:pointer;" title="Ir para o lobby" onclick="ROOM.lobby()">lobby<a> em 10 segundos</small></div>
+                            <div><small>Voltar para a Taverna <a style="color: #a90d5c;cursor:pointer;" title="Ir para a Taverna" onclick="GAME.lobby()">Taverna<a></small></div>
                         </div>
                     `
                 });
             }, 3000);
-
-            // levar o jogador para o lobby
-            // setTimeout(_=> {
-            //     this.SESSION.setRoomID(null);
-            //     window.location.replace('./lobby.html');
-            // }, 10000);
         }
         // tempo da sala expirado
         if (data.room_status === 4) {
@@ -479,19 +514,18 @@ class game {
                             Os piratas demoraram de mais, o tempo da sala acabou!
                         </p>
                         <img style="max-width: 250px;" src="./../img/splash.gif">
-                        <div><small>Você será enviado para o <a style="color: #a90d5c;cursor:pointer;" title="Ir para o lobby" onclick="GAME.lobby()">lobby<a> em 10 segundos</small></div>
+                        <div><small>Voltar para a <a style="color: #a90d5c;cursor:pointer;" title="Ir para a Taverna" onclick="GAME.lobby()">Taverna<a></small></div>
                     </div>
                 `
             });
-
-            // levar o jogador para o lobby
-            setTimeout(_=> {
-                // this.SESSION.setRoomID(null);
-                // window.location.replace('./lobby.html');
-            }, 10000);
         }
     }
 
+    lobby() {
+        this.SESSION.setRoomID('lobby')
+        this.render('lobby')
+        this.MODAL.close()
+    }
 
     mapSlots(data) {
         let rects = this.SVG.querySelectorAll('rect');
@@ -499,7 +533,7 @@ class game {
         const slots = []
         Array.from(rects).forEach(e => {
             e.id = (new Date().getTime()+i);
-            e.onclick = ()=>{this.clickSlot(e.id)}
+            e.onclick = ()=>{this.clickSlot(e.id, data)}
             slots.push({id: e.id, idroom:data.room_id, checked: false, color: ''});
             i++;
         });
@@ -514,7 +548,7 @@ class game {
             let i = 0;
             Array.from(rects).forEach(e => {
                 e.id = data.room_slots[i].slot_id;
-                e.onclick = ()=>{this.clickSlot(e.id)}
+                e.onclick = ()=>{this.clickSlot(e.id, data)}
                 if (data.room_slots[i].slot_checked) {
                     e.style.fill = '#'+data.room_slots[i].slot_color;
                 }
@@ -575,6 +609,7 @@ class game {
                 display: flex;
                 flex-direction: column;
                 position: absolute;
+                pointer-events: none;
                 left: ${(data.cursor.x*window.innerWidth)}px;
                 top: ${data.cursor.y}px;
                 z-index: 1;
@@ -588,7 +623,7 @@ class game {
         })
     }
 
-    clickSlot (slot_id) {
+    clickSlot (slot_id, data) {
 
         this.socket.emit('click-on-slot', {
             user_id: this.SESSION.getUserId(),
@@ -598,38 +633,13 @@ class game {
         this.socket.on('click-on-slot-error', (data) => {
             this.ERROR.showError(data.error)
         })
+
+        if (data.room_turn_player === this.SESSION.getUserId()) {
+            this.playSound('checked_success', 1)
+        }else{
+            this.playSound('checked_error', 1)
+        }
     }
-    
-    // getState () {
-
-    //     fetch (`./../../api/src/rest/room.php?method=getState&idroom=${this.SESSION.inRoom()}`, {
-    //         mheaders: {
-    //             'Authorized': 'Baerer ' + this.SESSION.getJWT()
-    //         }
-    //     })
-    //     .then(r=>r.json())
-    //     .then(json => {
-    //         if (json.success) {
-
-    //             // comparando os dados para ver se existem atualizações
-    //             if (JSON.stringify(this.STATE) !== JSON.stringify(json.data)) {
-    //                 this.STATE = json.data;
-
-    //                 // monsta lista de jogadores
-    //                 this.showPlayers();
-    //                 this.setSlots();
-    //             }
-
-    //         }else{
-    //             // se houver qualquer erro na getState, enjetamos o jogador pro lobby
-    //             this.SESSION.setRoomID(null);
-    //             window.location.replace('./lobby.html');
-    //         }
-    //     });
-    // }
-
-    
-
     
 
 }
