@@ -15,3 +15,8 @@ services:
       VIRTUAL_HOST: pulapirata.adelsonguimaraes.com.br
       VIRTUAL_HOST: 4000
     restart: always
+
+networks:
+  default:
+    external:
+      name: nginx-proxy
