@@ -13,7 +13,7 @@ services:
     environment:
       LETSENCRYPT_HOST: pulapirata.adelsonguimaraes.com.br
       VIRTUAL_HOST: pulapirata.adelsonguimaraes.com.br
-      VIRTUAL_HOST: 4000
+      VIRTUAL_PORT: 4000
     restart: always
 
 networks:
