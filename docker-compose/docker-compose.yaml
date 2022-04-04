@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  nodejs:
+    image: adelsonguimaraes/pulapirata:latest
+    container_name: pulapirata
+    #volumes:
+    #  - ./src/database:/usr/app/src/database
+    ports:
+      - 4000:4000
+    environment:
+      LETSENCRYPT_HOST: pulapirata.adelsonguimaraes.com.br
+      VIRTUAL_HOST: pulapirata.adelsonguimaraes.com.br
+    restart: always
