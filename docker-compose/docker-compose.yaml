@@ -6,8 +6,8 @@ services:
     container_name: pulapirata
     #volumes:
     #  - ./src/database:/usr/app/src/database
-    ports:
-      - 400:4000
+    # ports:
+    #   - 4000:4000
     expose:
       - 4000
     environment:
