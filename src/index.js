@@ -202,6 +202,6 @@ io.on('connection', (socket) => {
 });
 
 
-server.listen(4000, ()=>{
+server.listen(80, ()=>{
     console.log('aplicação rodando na porta 4000');
 });

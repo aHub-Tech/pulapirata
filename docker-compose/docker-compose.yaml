@@ -6,8 +6,10 @@ services:
     container_name: pulapirata
     #volumes:
     #  - ./src/database:/usr/app/src/database
-    ports:
-      - 4000:4000
+    # ports:
+    #   - 80:4000
+    expose:
+      - 80
     environment:
       LETSENCRYPT_HOST: pulapirata.adelsonguimaraes.com.br
       VIRTUAL_HOST: pulapirata.adelsonguimaraes.com.br
