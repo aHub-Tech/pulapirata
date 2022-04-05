@@ -41,12 +41,12 @@ class game {
     playSound (sound, volume) {
         const audio = new Audio()
         audio.src = `./../app/audio/${sound}.mp3`
-        audio.volume = parseFloat('0.'+volume)
+        audio.volume = 0.1//parseFloat('0.'+volume)
         audio.play()
     }
 
     confirmWelcome() {
-        // this.playSound('pirate_music', 2)
+        this.playSound('pirate_music', 2)
         this.MODAL.close()
     }
 
@@ -90,6 +90,8 @@ class game {
 
         // recebendo lista de usuários atualizada a cada nova conexão
         this.socket.on('data', (data) => {
+            console.log(data)
+
             this.ROOMS = data.data
             this.renderRooms(data)
         })
@@ -213,6 +215,9 @@ class game {
         
         // recebendo dados da sala deo utros jogadores
         this.socket.on('data-room', async (data) => {
+
+            console.log(data);
+
             this.showPlayers(data.data)
             this.setSlots(data.data)
         })
@@ -379,7 +384,7 @@ class game {
             </div>`
         });
 
-        this.playSound('my_turn', 1)
+        // this.playSound('my_turn', 1)
     }
 
     confirmMyTurn() {
@@ -424,7 +429,7 @@ class game {
             console.log('status 2: game')
             this.MODAL.close()
             this.SPLASH_SCREEN.closeSplash()
-            this.getPositionMouse ()
+            // this.getPositionMouse ()
             
             if (data.room_turn_player===this.SESSION.getUserId()) this.showMyTurn()
         } 
@@ -513,7 +518,38 @@ class game {
                         <p>
                             Os piratas demoraram de mais, o tempo da sala acabou!
                         </p>
-                        <img style="max-width: 250px;" src="./../img/splash.gif">
+                        <img style="max-width: 250px;" src="./../app/img/splash.gif">
+                        <div><small>Voltar para a <a style="color: #a90d5c;cursor:pointer;" title="Ir para a Taverna" onclick="GAME.lobby()">Taverna<a></small></div>
+                    </div>
+                `
+            });
+        }
+        if (data.room_status === 5) {
+            console.log('status 5: wo')
+            this.SPLASH_SCREEN.closeSplash()
+
+
+            let td = ``;
+            data.room_players.map(p => {
+                td += `
+                    <tr>
+                        <td>${p.user_name}</td>
+                        <td>${p.points}</td>
+                    </tr>
+                `;
+            });
+
+            this.MODAL.close();
+            this.MODAL.show({
+                header:`
+                    <h3>Todos desistiram!</h3>
+                `,
+                content: `
+                    <div class="finish">
+                        <p>
+                            Parabéns você é o mais assustador dos sete mares!
+                        </p>
+                        <img style="max-width: 250px;" src="./../app/img/splash.gif">
                         <div><small>Voltar para a <a style="color: #a90d5c;cursor:pointer;" title="Ir para a Taverna" onclick="GAME.lobby()">Taverna<a></small></div>
                     </div>
                 `
@@ -563,65 +599,63 @@ class game {
         let obj = {};
         obj.user_id = this.SESSION.getUserId();
         
-        console.log('aqui');
-        
         this.socket.emit('start-game' , obj)
         this.socket.on('start-game-confirmed', (data) => {
             this.showPlayers(data.data)
         })
     }
 
-    getPositionMouse () {
-        document.onmousemove = (e) => {
+    // getPositionMouse () {
+    //     document.onmousemove = (e) => {
 
-            this.socket.emit('show-my-position-cursor', ({
-                user_id: this.SESSION.getUserId(),
-                cursor: {
-                    x: e.x/window.innerWidth, 
-                    y: e.y
-                }
-            }))
-        }
+    //         this.socket.emit('show-my-position-cursor', ({
+    //             user_id: this.SESSION.getUserId(),
+    //             cursor: {
+    //                 x: e.x/window.innerWidth, 
+    //                 y: e.y
+    //             }
+    //         }))
+    //     }
 
-        this.socket.on('show-outher-cursor-position', (data) => {
-            const body = document.body;
-            const cursor = document.getElementById(`${data.user_id}`) || document.createElement('div')
-            cursor.innerHTML = ''
+    //     this.socket.on('show-outher-cursor-position', (data) => {
+    //         const body = document.body;
+    //         const cursor = document.getElementById(`${data.user_id}`) || document.createElement('div')
+    //         cursor.innerHTML = ''
 
-            const icon = document.createElement('i')
-            icon.classList.add(`fa`)
-            icon.classList.add(`fa-hand-pointer`)
-            icon.style = `color: #${data.user_color};`
+    //         const icon = document.createElement('i')
+    //         icon.classList.add(`fa`)
+    //         icon.classList.add(`fa-hand-pointer`)
+    //         icon.style = `color: #${data.user_color};`
 
-            cursor.appendChild(icon)
+    //         cursor.appendChild(icon)
 
-            const label = document.createElement('label')
-            label.style = `
-                font-size: 8px;
-                padding: 5px;
-            `
-            label.innerHTML = data.user_name
+    //         const label = document.createElement('label')
+    //         label.style = `
+    //             font-size: 8px;
+    //             padding: 5px;
+    //         `
+    //         label.innerHTML = data.user_name
 
-            cursor.appendChild(label)
+    //         cursor.appendChild(label)
 
-            cursor.style = `
-                width: 120px;
-                display: flex;
-                flex-direction: column;
-                position: absolute;
-                pointer-events: none;
-                left: ${(data.cursor.x*window.innerWidth)}px;
-                top: ${data.cursor.y}px;
-                z-index: 1;
-                align-items: center;
+    //         cursor.style = `
+    //             width: 120px;
+    //             display: flex;
+    //             flex-direction: column;
+    //             position: absolute;
+    //             pointer-events: none;
+    //             left: ${(data.cursor.x*window.innerWidth)}px;
+    //             top: ${data.cursor.y}px;
+    //             z-index: 1;
+    //             align-items: center;
 
-            `
+    //         `
 
-            cursor.id = data.user_id
+    //         cursor.id = data.user_id
             
-            body.appendChild(cursor)
-        })
-    }
+    //         body.appendChild(cursor)
+    //     })
+    // }
 
     clickSlot (slot_id, data) {
 
@@ -634,11 +668,11 @@ class game {
             this.ERROR.showError(data.error)
         })
 
-        if (data.room_turn_player === this.SESSION.getUserId()) {
-            this.playSound('checked_success', 1)
-        }else{
-            this.playSound('checked_error', 1)
-        }
+        // if (data.room_turn_player === this.SESSION.getUserId()) {
+        //     this.playSound('checked_success', 1)
+        // }else{
+        //     this.playSound('checked_error', 1)
+        // }
     }
     
 

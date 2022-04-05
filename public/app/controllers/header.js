@@ -74,7 +74,8 @@ class header {
     }
 
     setUser (text = '') {
-        this.USER.querySelector('div.user-name').innerHTML = `<img style="max-width:40px; margin-right:5px;" src="img/online.svg"> `;
+        this.USER.querySelector('div.user-name').innerHTML = `<i class="fa fa-cog"></i> `;
+        this.USER.querySelector('div.user-name').innerHTML = `<img style="max-width:40px;" src="img/online.svg"> `;
         this.USER.querySelector('div.user-name').innerHTML += (text !== '') ? text : 'User';
         return this;
     }

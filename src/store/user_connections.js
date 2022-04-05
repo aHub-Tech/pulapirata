@@ -47,7 +47,7 @@ const user_connections = {
         room_owner: '',
         room_pass: '',
         room_privated: false,
-        room_status: 0, // 0: ABERTO / 1: CHEIO /  2: INICIADO / 3: FINALIZADO / 4: EXPIRADO
+        room_status: 0, // 0: ABERTO / 1: CHEIO /  2: INICIADO / 3: FINALIZADO / 4: EXPIRADO /5: WO
         room_date_time: Date.now(),
         room_time_turn: 0,
         room_turn_player: ''
@@ -178,98 +178,103 @@ const user_connections = {
                 - Informa o próximo a jogar
         */
 
-        // verificando se o socket é conhecido
-        const user = this.getDataBySocketId(socket_id)
-        // se for conhecido apenas ignoramos
-        if (!user) return false
+        // // verificando se o socket é conhecido
+        // const user = this.getDataBySocketId(socket_id)
+        // // se for conhecido apenas ignoramos
+        // if (!user) return false
 
-        // verificando se o jogador era o dono da sala
-        const owner = this.rooms.find(e => e.room_owner === user.user_id && e.room_id === user.room_id)
-        // verrificando se era o jogador da vez
-        const turn_player = this.rooms.find(e => e.room_turn_player === user.user_id && e.room_id === user.room_id)
-        // pegando a sala
-        const room = this.rooms.find(e => e.room_id === user.room_id)
-
-
-        // removendo usuário da lista de jogadores na sala
-        this.players = this.players.filter(e => e.user_id !== user.user_id)
+        // // verificando se o jogador era o dono da sala
+        // const owner = this.rooms.find(e => e.room_owner === user.user_id && e.room_id === user.room_id)
+        // // verrificando se era o jogador da vez
+        // const turn_player = this.rooms.find(e => e.room_turn_player === user.user_id && e.room_id === user.room_id)
+        // // pegando a sala
+        // const room = this.rooms.find(e => e.room_id === user.room_id)
 
 
-        if (!room) return false
+        // // removendo usuário da lista de jogadores na sala
+        // this.players = this.players.filter(e => e.user_id !== user.user_id)
 
-        // pegando os demais jogadores da sala
-        const roomPlayers = this.players.filter(e => e.room_id === user.room_id)
 
-        // o jogador de que saiu era o dono da sala e a sala está com mais pessoas
-        // esperando para iniciar a partida, a liderança passa para o próximo jogador
-        if (owner!=undefined && room.room_status===0 && roomPlayers.length>=1) {
-             // seta o proximo jogador da lista como dono
-             const newOwner = roomPlayers[0]
-             room.room_owner = newOwner.user_id
-             room.room_owner_name = newOwner.user_name
-             room.turn_player = newOwner.user_id
+        // if (!room) return false
+
+        // // pegando os demais jogadores da sala
+        // const roomPlayers = this.players.filter(e => e.room_id === user.room_id)
+
+        // // o jogador de que saiu era o dono da sala e a sala está com mais pessoas
+        // // esperando para iniciar a partida, a liderança passa para o próximo jogador
+        // if (owner!=undefined && room.room_status===0 && roomPlayers.length>=1 && room.room_id != 'lobby') {
+        //     console.log('desconect 1')
+        //      // seta o proximo jogador da lista como dono
+        //      const newOwner = roomPlayers[0]
+        //      room.room_owner = newOwner.user_id
+        //      room.room_owner_name = newOwner.user_name
+        //      room.turn_player = newOwner.user_id
              
-             // retorna um aviso
-             return {
-                 msg: `${user.user_name} era o dono da sala e saiu agora ${newOwner.user_name} é o novo dono.`,
-                 signal: 'room_new_owner',
-                 player_id: newOwner.user_id,
-                 data: this.getPublicRoomData(room.room_id),
-                 players: roomPlayers
-             }
+        //      // retorna um aviso
+        //      return {
+        //          msg: `${user.user_name} era o dono da sala e saiu agora ${newOwner.user_name} é o novo dono.`,
+        //          signal: 'room_new_owner',
+        //          player_id: newOwner.user_id,
+        //          data: this.getPublicRoomData(room.room_id),
+        //          players: roomPlayers
+        //      }
 
-        // quando sair um jogador e o jogo ainda não estiver iniciado e ele não for o dono
-        } else if (!owner && room.room_status===0) {
-                // retorna um aviso
-                return {
-                    msg: ``,
-                    signal: 'data-room',
-                    player_id: '',
-                    data: this.getPublicRoomData(room.room_id),
-                    players: roomPlayers
-                }
-        // haviam apenas dois jogadores na sala e outro saiu
-        // então agora o jogador restante se torna o vencedor
-        } else if (room.room_status===2 && roomPlayers.length==1) {
-            // remove a sala
-            this.rooms = this.rooms.filter(e => e.room_id !== user.room_id)
+        // // quando sair um jogador e o jogo ainda não estiver iniciado e ele não for o dono
+        // } else if (!owner && room.room_status===0) {
+        //     console.log('desconect 2')
+        //         // retorna um aviso
+        //         return {
+        //             msg: ``,
+        //             signal: 'data-room',
+        //             player_id: '',
+        //             data: this.getPublicRoomData(room.room_id),
+        //             players: roomPlayers
+        //         }
+        // // haviam apenas dois jogadores na sala e outro saiu
+        // // então agora o jogador restante se torna o vencedor
+        // } else if (room.room_status===2 && roomPlayers.length==1) {
+        //     console.log('desconect 3')
+        //     // remove a sala
+        //     this.rooms = this.rooms.filter(e => e.room_id !== user.room_id)
             
-            // remove todos os demais jogadores para o looby
-            roomPlayers.forEach(e => {
-                this.players.forEach(p => {
-                    if (p.user_id === e.user_id) {
-                        p.room_id = 'lobby'
-                    }
-                })
-            })
+        //     // remove todos os demais jogadores para o looby
+        //     roomPlayers.forEach(e => {
+        //         this.players.forEach(p => {
+        //             if (p.user_id === e.user_id) {
+        //                 p.room_id = 'lobby'
+        //             }
+        //         })
+        //     })
 
-            // retorna um aviso
-            return {
-                msg: `Todos os jogadores desistiram da partida você é o vencedor!.`,
-                signal: 'room_winner_wo',
-                players: roomPlayers
-            }
+        //     // retorna um aviso
+        //     return {
+        //         msg: `Todos os jogadores desistiram da partida você é o vencedor!.`,
+        //         signal: 'room_winner_wo',
+        //         players: roomPlayers
+        //     }
 
-        // Haviam 3 ou mais jogadores e a sala estava em jogo
-        // o jogador da vez saiu da partida, então a vez é passada para o próximo jogador
-        } else if (turn_player!=undefined && room.room_status===2 && roomPlayers.length>=2) {
-            // passando a vez de jogar para o próximo jogador da lista
-            room.room_turn_player = roomPlayers[0].user_id
+        // // Haviam 3 ou mais jogadores e a sala estava em jogo
+        // // o jogador da vez saiu da partida, então a vez é passada para o próximo jogador
+        // } else if (turn_player!=undefined && room.room_status===2 && roomPlayers.length>=2) {
+        //     console.log('desconect 4')
+        //     // passando a vez de jogar para o próximo jogador da lista
+        //     room.room_turn_player = roomPlayers[0].user_id
 
-            // retorna um aviso
-            return {
-                msg: `${user.user_name} saiu da partida e agora ${roomPlayers[0].user_name} é quem joga`,
-                signal: 'room_new_turn_player',
-                player_id: roomPlayers[0].user_id,
-                players: roomPlayers
-            }
-        }else{
-            // remove a sala
-            this.rooms = this.rooms.filter(e => e.room_id !== user.room_id)
+        //     // retorna um aviso
+        //     return {
+        //         msg: `${user.user_name} saiu da partida e agora ${roomPlayers[0].user_name} é quem joga`,
+        //         signal: 'room_new_turn_player',
+        //         player_id: roomPlayers[0].user_id,
+        //         players: roomPlayers
+        //     }
+        // }else{
+        //     console.log('desconect default')
+        //     // remove a sala
+        //     this.rooms = this.rooms.filter(e => e.room_id !== user.room_id)
 
-            return false
+        //     return false
 
-        }
+        // }
     },
     setUserColor (user_id) {
         const player = this.players.find(d => d.user_id == user_id)
@@ -332,7 +337,7 @@ const user_connections = {
         let status = 'ABERTA'
         if (room_status===1) status = 'CHEIA'
         if (room_status===2) status = 'EM GAME'
-        if (room_status===3) status = 'FINALIZADO'
+        if (room_status===3 || room_status===5) status = 'FINALIZADO'
         if (room_status===4) status = 'EXPIRADO'
         return status
     },
@@ -353,8 +358,9 @@ const user_connections = {
         return publicData
     },
     getPublicRoomData (room_id) {
+
         const room = this.rooms.find(r => r.room_id === room_id)
-        
+
         const publicData = {
             room_id: room.room_id,
             room_owner: room.room_owner,

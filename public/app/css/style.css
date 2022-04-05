@@ -40,7 +40,7 @@ header {
     padding: 0 15px;
     color: #fff;
     font-weight: 600;
-    font-size: medium;
+    font-size: 12px;
     position: fixed;
     top:0;
     z-index: 2;
@@ -48,7 +48,7 @@ header {
 
 header > .room {
     color: #F8CB58;
-    font-size: larger;
+    font-size: 14px;
     transition: .5s;
 }
 header > .room:hover {
@@ -58,7 +58,7 @@ header > .room:hover {
 header > .title {
     font-style: normal;
     font-weight: 900;
-    font-size: 24px;
+    font-size: 14px;
     line-height: 28px;
     text-align: center;
     letter-spacing: 0.04em;
@@ -71,7 +71,7 @@ header > .user {
     cursor: pointer;
     user-select: none;
     text-transform: uppercase;
-    font-size: 14px;
+    font-size: 12px;
     display: inherit;
     padding: 15px 0;
 }
@@ -148,8 +148,8 @@ form {
 }
 .input-group > label {
     font-weight: 600;
-    padding: 0 8px;
-    width: 80px;
+    padding: 5px 8px;
+    /* min-width: 80px; */
 }
 .input-group > input {
     width: inherit;
@@ -157,15 +157,32 @@ form {
     padding: 5px 4px;
     border-radius: 3px;
 }
+.input-group-fc {
+    flex-direction: column;
+}
+
+.inline-jc {
+    justify-content: center !important;
+    align-items: center;
+}
+
+.mw-120 {
+    max-width: 120px;
+}
+.mw-400 {
+    max-width: 400px;
+}
 
 button {
     background-color: #303596;
     color: #e0e0e0;
-    padding: 5px 10px;
     border-radius: 5px;
     font-weight: bold;
     cursor: pointer;
     transition: .5s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 button:hover {
     background-color: #494fc5;
@@ -225,16 +242,19 @@ button:hover {
     color: #f9dfdf;
     background: brown;
     text-transform: uppercase;
-    font-weight: bold;
-    display: none;
+    /* font-weight: bold; */
+    /* display: none; */
     box-shadow: 2px 3px #4e4e4e;
     z-index: 9999;
     user-select: none;
-    font-size: 12px;
+    font-size: 10px;
     letter-spacing: -2px;
+    transition: .5s;
+    transform: translateX(-150%);
 }
 .show{
-    display: block !important;
+    /* display: block !important; */
+    transform: translateX(0%);
 }
 .jogador_rodada {
     padding: 10px;

@@ -2,7 +2,8 @@ class auth {
     constructor () {
         this.ERROR = new error();
         this.SPLASH_SCREEN = new splashScreen();
-        this.SESSION = new session();
+        this.SESSION = new session()
+        this.MODAL = new modal()
 
         if (this.SESSION.isValid()) return window.location.replace('/game');
     }
@@ -95,15 +96,49 @@ class auth {
     }
 
     guest() {
+        this.MODAL.show({
+            header:`
+                <h3>LICENÇA TEMPORÁRIA DE PIRATA!</h3>
+                <small>Com a conta temporária seus dados não serão salvos e não haverá progresso no jogo!</small>
+            `,
+            content: `
+            <img src="./../app/img/card3.png" class="mw-120">
+            <div class="input-group input-group-fc">
+                    <label>Qual seu nome pirata?</label>
+                    <input type="text" class="mw-400" placeholder="Insira seu nome de pirata" name="_name" autocomplete="off"/>
+                </div>
+            <div class="inline inline-jc">
+                <button onclick="AUTH.confirmGuest()">Criar</button>
+                <button class="btn-brown" onclick="AUTH.cancelGuest()">Cancelar</button>
+            </div>`
+        });
+    }
+
+    confirmGuest() {
+        let _name = document.querySelector('input[name=_name]').value;
+        
+        // removendo html
+        let tmp = document.createElement("DIV");
+        tmp.innerHTML = _name;
+        _name = tmp.textContent || tmp.innerText || "";
+
+        if (_name === '') return this.ERROR.showError('Seu nome de pirata não pode ser vazio!')
+        if (_name.length>10) return this.ERROR.showError('Seu nome de pirata não pode ter mais de 10 letras!')
+        
         // gerar um nome aleatório
         const data = {
             user_id: (Date.now()),
-            user_name: ('GUEST' + Date.now()),
+            // user_name: ('GUEST' + Date.now()),
+            user_name: _name,
             room_id:'lobby',
             room_owner: false
         };
 
         this.SESSION.set(data);
         window.location.replace('/game');
+    }
+
+    cancelGuest() {
+        this.MODAL.close()
     }
 }
